@@ -1,7 +1,7 @@
 # pocket-sdk
 
-[!CAUTION]
-:construction: WIP - Still Early :construction:
+> [!WARNING]
+> 🚧 WIP - still early 🚧
 
 Rust based SDK for interacting with Pocket Network's Shannon upgrade
 
