@@ -11,15 +11,15 @@ pub struct SessionHeader {
     pub service_id: ::prost::alloc::string::String,
     /// NOTE: session_id can be derived from the above values using onchain but is included in the header for convenience
     ///
-    /// A unique pseudoranom ID for this session
+    /// A unique pseudorandom ID for this session
     #[prost(string, tag = "3")]
     pub session_id: ::prost::alloc::string::String,
     /// The height at which this session started
     #[prost(int64, tag = "4")]
     pub session_start_block_height: i64,
     /// Note that`session_end_block_height` is a derivative of (`start` + `num_blocks_per_session`)
-    /// as goverened by onchain params at the time of the session start.
-    /// It is stored as an additional field to simplofy business logic in case
+    /// as governed by onchain params at the time of the session start.
+    /// It is stored as an additional field to simplify business logic in case
     /// the number of blocks_per_session changes during the session.
     ///
     /// The height at which this session ended, this is the last block of the session
@@ -37,13 +37,13 @@ impl ::prost::Name for SessionHeader {
     }
 }
 /// Session is a fully hydrated session object that contains all the information for the Session
-/// and its parcipants.
+/// and its participants.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Session {
     /// The header of the session containing lightweight data
     #[prost(message, optional, tag = "1")]
     pub header: ::core::option::Option<SessionHeader>,
-    /// A unique pseudoranom ID for this session
+    /// A unique pseudorandom ID for this session
     #[prost(string, tag = "2")]
     pub session_id: ::prost::alloc::string::String,
     /// The session number since genesis

@@ -33,6 +33,7 @@ pub struct Claim {
     #[prost(message, optional, tag = "2")]
     pub session_header: ::core::option::Option<super::session::SessionHeader>,
     /// Root hash from smt.SMST#Root().
+    /// TODO_UP_NEXT(@bryanchriswhite, #1497): Dehydrate the claim's root hash from onchain events.
     #[prost(bytes = "vec", tag = "3")]
     pub root_hash: ::prost::alloc::vec::Vec<u8>,
     /// Important: This field MUST only be set by proofKeeper#EnsureValidProofSignaturesAndClosestPath
@@ -214,8 +215,6 @@ impl ::prost::Name for EventClaimUpdated {
 pub struct EventProofSubmitted {
     #[prost(message, optional, tag = "1")]
     pub claim: ::core::option::Option<Claim>,
-    #[prost(message, optional, tag = "2")]
-    pub proof: ::core::option::Option<Proof>,
     #[prost(uint64, tag = "3")]
     pub num_relays: u64,
     #[prost(uint64, tag = "4")]
@@ -240,8 +239,6 @@ impl ::prost::Name for EventProofSubmitted {
 pub struct EventProofUpdated {
     #[prost(message, optional, tag = "1")]
     pub claim: ::core::option::Option<Claim>,
-    #[prost(message, optional, tag = "2")]
-    pub proof: ::core::option::Option<Proof>,
     #[prost(uint64, tag = "3")]
     pub num_relays: u64,
     #[prost(uint64, tag = "4")]
@@ -263,14 +260,14 @@ impl ::prost::Name for EventProofUpdated {
 }
 /// Event emitted after a proof has been checked for validity in the proof module's
 /// EndBlocker.
+///
+/// Next index: 6
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventProofValidityChecked {
-    #[prost(message, optional, tag = "1")]
-    pub proof: ::core::option::Option<Proof>,
+    #[prost(message, optional, tag = "5")]
+    pub claim: ::core::option::Option<Claim>,
     #[prost(uint64, tag = "2")]
     pub block_height: u64,
-    #[prost(enumeration = "ClaimProofStatus", tag = "3")]
-    pub proof_status: i32,
     /// reason is the string representation of the error that led to the proof being
     /// marked as invalid (e.g. "invalid closest merkle proof", "invalid relay request signature")
     #[prost(string, tag = "4")]

@@ -321,7 +321,8 @@ pub struct Params {
     /// application unbonding period will exceed the end of its corresponding proof window close height.
     #[prost(uint64, tag = "8")]
     pub application_unbonding_period_sessions: u64,
-    /// The amount of upokt that a compute unit should translate to when settling a session.
+    /// The amount of tokens that a compute unit should translate to when settling a session.
+    /// It is denominated in fractional uPOKT (1/compute_unit_cost_granularity)
     /// DEV_NOTE: This used to be under x/tokenomics but has been moved here to avoid cyclic dependencies.
     #[prost(uint64, tag = "9")]
     pub compute_units_to_tokens_multiplier: u64,
@@ -329,6 +330,32 @@ pub struct Params {
     /// unstaking before their staked assets are moved to its account balance.
     #[prost(uint64, tag = "10")]
     pub gateway_unbonding_period_sessions: u64,
+    /// compute_unit_cost_granularity is the fraction of the base unit (uPOKT) used
+    /// to represent the smallest price of a single compute unit.
+    /// compute_unit_cost_granularity defines the smallest fraction of uPOKT that can represent
+    /// the cost of a single compute unit.
+    ///
+    /// It acts as a denominator in the formula:
+    ///
+    ///    compute_unit_cost_in_uPOKT = compute_units_to_tokens_multiplier / compute_unit_cost_granularity
+    ///
+    /// This enables high-precision pricing of compute units using integer math.
+    /// For example:
+    ///
+    /// +-------------------------------+---------------------------------------------+
+    /// | compute_unit_cost_granularity | compute_units_to_tokens_multiplier unit     |
+    /// +-------------------------------+---------------------------------------------+
+    /// | 1                             | uPOKT                                       |
+    /// | 1_000                         | nPOKT (nanoPOKT, 1e-3 uPOKT)                |
+    /// | 1_000_000                     | pPOKT (picoPOKT, 1e-6 uPOKT)                |
+    /// +-------------------------------+---------------------------------------------+
+    ///
+    /// ⚠️ Note: This value is a configurable global network parameter (not a constant).
+    /// It must be a power of 10, allowing precise denomination shifts without affecting
+    /// ongoing sessions. This prevents sessions from settling using parameters that
+    /// were not in effect during their creation.
+    #[prost(uint64, tag = "11")]
+    pub compute_unit_cost_granularity: u64,
 }
 impl ::prost::Name for Params {
     const NAME: &'static str = "Params";

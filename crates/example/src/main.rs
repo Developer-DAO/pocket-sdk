@@ -1,20 +1,43 @@
+use std::collections::HashMap;
+
 use shannon_protos::{
     cosmos_sdk_proto::cosmos::bank::v1beta1::{
         QueryBalanceRequest, query_client::QueryClient as BankQueryClient,
     },
-    pocket::gateway::{QueryAllGatewaysRequest, query_client::QueryClient as GatewayQueryClient},
+    pocket::supplier::{QueryAllSuppliersRequest, query_client::QueryClient as SupplierClient},
 };
 use tonic::transport::{Channel, ClientTlsConfig};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // example of interacting with shannon endpoints
-
+    // Get all suppliers on shannon and count how many there is of each type
     let mut client =
-        GatewayQueryClient::connect("https://shannon-testnet-grove-grpc.beta.poktroll.com").await?;
-    let req = QueryAllGatewaysRequest { pagination: None };
-    let res = client.all_gateways(req).await?.into_inner().gateways;
-    println!("{res:?}\n");
+        SupplierClient::connect("https://shannon-grove-grpc.mainnet.poktroll.com").await?;
+    let req = QueryAllSuppliersRequest {
+        pagination: None,
+        filter: None,
+        dehydrated: false,
+    };
+
+    let res = client
+        .all_suppliers(req)
+        .await?
+        .into_inner()
+        .supplier
+        .into_iter()
+        .fold(HashMap::new(), |mut acc, e| {
+            e.services
+                .into_iter()
+                .for_each(|s| match acc.get_mut(&s.service_id) {
+                    Some(v) => *v += 1,
+                    None => {
+                        acc.insert(s.service_id, 1);
+                    }
+                });
+            acc
+        });
+
+    println!("{res:#?}\n");
 
     // example of getting balances
 

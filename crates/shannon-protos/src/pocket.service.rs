@@ -487,8 +487,10 @@ pub mod query_client {
         }
     }
 }
-/// Relay contains both the RelayRequest (signed by the Application) and the RelayResponse (signed by the Supplier).
-/// The serialized tuple is inserted into the SMST leaves as values in the Claim/Proof lifecycle.
+/// Relay message
+///
+/// - Contains both the RelayRequest (signed by the Application) and RelayResponse (signed by the Supplier).
+/// - The serialized tuple is stored in SMST leaves as values during the Claim/Proof lifecycle.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Relay {
     #[prost(message, optional, tag = "1")]
@@ -506,25 +508,25 @@ impl ::prost::Name for Relay {
         "/pocket.service.Relay".into()
     }
 }
-/// RelayRequestMetadata contains the metadata for a RelayRequest.
+/// RelayRequestMetadata
+///
+/// Contains metadata for a RelayRequest.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RelayRequestMetadata {
     /// Session header associated with the relay.
     #[prost(message, optional, tag = "1")]
     pub session_header: ::core::option::Option<super::session::SessionHeader>,
-    /// The request signature is a serialized ring signature that may have been
-    /// by either the application itself or one of the gateways that the
-    /// application has delegated to. The signature is made using the ring of the
-    /// application in both cases.
+    /// Signature for the request:
+    /// - Serialized ring signature, created by either the application itself or a delegated gateway.
+    /// - Always uses the application's ring.
     #[prost(bytes = "vec", tag = "2")]
     pub signature: ::prost::alloc::vec::Vec<u8>,
-    /// TODO_MAINNET: make sure we're checking/verifying this address onchain (if needed).
-    /// Relevant conversation: <https://github.com/pokt-network/poktroll/pull/567#discussion_r1628722168>
+    /// TODO_MAINNET: Ensure this address is checked/verified onchain if needed.
+    /// See: <https://github.com/pokt-network/poktroll/pull/567#discussion_r1628722168>
     ///
-    /// The supplier operator address the relay is sent to. It is being used on the
-    /// RelayMiner to route to the correct supplier.
-    ///
-    /// The Bech32 address of the application.
+    /// Supplier operator address:
+    /// - The Bech32 address of the supplier operator the relay is sent to.
+    /// - Used by the RelayMiner to route to the correct supplier.
     #[prost(string, tag = "3")]
     pub supplier_operator_address: ::prost::alloc::string::String,
 }
@@ -538,14 +540,16 @@ impl ::prost::Name for RelayRequestMetadata {
         "/pocket.service.RelayRequestMetadata".into()
     }
 }
-/// RelayRequest holds the request details for a relay.
+/// RelayRequest
+///
+/// Holds the request details for a relay.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RelayRequest {
     #[prost(message, optional, tag = "1")]
     pub meta: ::core::option::Option<RelayRequestMetadata>,
-    /// payload is the serialized payload for the request.
-    /// The payload is passed directly to the service and as such can be any
-    /// format that the service supports: JSON-RPC, REST, gRPC, etc.
+    /// Serialized request payload:
+    /// - Passed directly to the service.
+    /// - Can be any supported format: JSON-RPC, REST, gRPC, etc.
     #[prost(bytes = "vec", tag = "2")]
     pub payload: ::prost::alloc::vec::Vec<u8>,
 }
@@ -559,16 +563,32 @@ impl ::prost::Name for RelayRequest {
         "/pocket.service.RelayRequest".into()
     }
 }
-/// RelayResponse contains the response details for a RelayRequest.
+/// RelayResponse
+///
+/// Contains the response details for a RelayRequest.
+///
+/// Next index: 5
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RelayResponse {
     #[prost(message, optional, tag = "1")]
     pub meta: ::core::option::Option<RelayResponseMetadata>,
-    /// payload is the serialized payload for the response.
-    /// The payload is passed directly from the service and as such can be any
-    /// format the service responds with: JSON-RPC, REST, gRPC, etc.
+    /// Serialized response payload:
+    /// - Passed directly from the service.
+    /// - Can be any supported format: JSON-RPC, REST, gRPC, etc.
+    /// - Used when communicating between applications, gatewways, and relayminers
+    /// - Omitted when inserting relays into the SMST, and therefore in onchain proofs,
+    ///    in order to minimize onchain proof size.
     #[prost(bytes = "vec", tag = "2")]
     pub payload: ::prost::alloc::vec::Vec<u8>,
+    /// SHA256 hash of the response payload.
+    /// This field is used for proof verification without requiring the full payload.
+    /// The hash ensures response integrity while reducing on-chain storage requirements.
+    #[prost(bytes = "vec", tag = "4")]
+    pub payload_hash: ::prost::alloc::vec::Vec<u8>,
+    /// Error returned by the RelayMiner, if applicable.
+    /// - If no error occurred, this field is empty.
+    #[prost(message, optional, tag = "3")]
+    pub relay_miner_error: ::core::option::Option<RelayMinerError>,
 }
 impl ::prost::Name for RelayResponse {
     const NAME: &'static str = "RelayResponse";
@@ -580,7 +600,9 @@ impl ::prost::Name for RelayResponse {
         "/pocket.service.RelayResponse".into()
     }
 }
-/// RelayResponseMetadata contains the metadata for a RelayResponse.
+/// RelayResponseMetadata
+///
+/// Contains metadata for a RelayResponse.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RelayResponseMetadata {
     /// Session header associated with the relay.
@@ -598,6 +620,38 @@ impl ::prost::Name for RelayResponseMetadata {
     }
     fn type_url() -> ::prost::alloc::string::String {
         "/pocket.service.RelayResponseMetadata".into()
+    }
+}
+/// RelayMinerError
+///
+/// Contains error details returned by the RelayMiner.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct RelayMinerError {
+    /// Registered codespace for the error (groups errors by source/module, e.g. `relayer_proxy`).
+    /// See: <https://github.com/pokt-network/poktroll/blob/main/pkg/relayer/proxy/errors.go#L8>
+    #[prost(string, tag = "1")]
+    pub codespace: ::prost::alloc::string::String,
+    /// Specific registered error code (e.g. `1` for `ErrRelayerProxyInvalidSession`)
+    /// See: <https://github.com/pokt-network/poktroll/blob/main/pkg/relayer/proxy/errors.go#L9>
+    #[prost(uint32, tag = "2")]
+    pub code: u32,
+    /// Human-readable, concise error description.
+    /// Example `invalid session in relayer request` for `ErrRelayerProxyInvalidSession`.
+    #[prost(string, tag = "3")]
+    pub description: ::prost::alloc::string::String,
+    /// Detailed error message (may include additional context).
+    /// Example: ErrRelayerProxyInvalidSession.Wrapf("application %q has %d service configs", ...)
+    #[prost(string, tag = "4")]
+    pub message: ::prost::alloc::string::String,
+}
+impl ::prost::Name for RelayMinerError {
+    const NAME: &'static str = "RelayMinerError";
+    const PACKAGE: &'static str = "pocket.service";
+    fn full_name() -> ::prost::alloc::string::String {
+        "pocket.service.RelayMinerError".into()
+    }
+    fn type_url() -> ::prost::alloc::string::String {
+        "/pocket.service.RelayMinerError".into()
     }
 }
 /// MsgUpdateParams is the Msg/UpdateParams request type.

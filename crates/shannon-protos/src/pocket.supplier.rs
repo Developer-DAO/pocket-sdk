@@ -122,6 +122,7 @@ pub enum SupplierUnbondingReason {
     Unspecified = 0,
     Voluntary = 1,
     BelowMinStake = 2,
+    Migration = 3,
 }
 impl SupplierUnbondingReason {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -133,6 +134,7 @@ impl SupplierUnbondingReason {
             Self::Unspecified => "SUPPLIER_UNBONDING_REASON_UNSPECIFIED",
             Self::Voluntary => "SUPPLIER_UNBONDING_REASON_VOLUNTARY",
             Self::BelowMinStake => "SUPPLIER_UNBONDING_REASON_BELOW_MIN_STAKE",
+            Self::Migration => "SUPPLIER_UNBONDING_REASON_MIGRATION",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -141,6 +143,7 @@ impl SupplierUnbondingReason {
             "SUPPLIER_UNBONDING_REASON_UNSPECIFIED" => Some(Self::Unspecified),
             "SUPPLIER_UNBONDING_REASON_VOLUNTARY" => Some(Self::Voluntary),
             "SUPPLIER_UNBONDING_REASON_BELOW_MIN_STAKE" => Some(Self::BelowMinStake),
+            "SUPPLIER_UNBONDING_REASON_MIGRATION" => Some(Self::Migration),
             _ => None,
         }
     }
@@ -220,6 +223,11 @@ pub struct QueryGetSupplierRequest {
     /// TODO_TECHDEBT: Add the ability to query for a supplier by owner_id
     #[prost(string, tag = "1")]
     pub operator_address: ::prost::alloc::string::String,
+    /// if true, return a dehydrated version of the supplier.
+    /// Why? This enables smaller response payloads to reduce payload size.
+    /// Example: Removes service_config_history and rev_share details from the response. See the implementation for more details.
+    #[prost(bool, tag = "2")]
+    pub dehydrated: bool,
 }
 impl ::prost::Name for QueryGetSupplierRequest {
     const NAME: &'static str = "QueryGetSupplierRequest";
@@ -252,6 +260,11 @@ pub struct QueryAllSuppliersRequest {
     pub pagination: ::core::option::Option<
         super::super::cosmos::base::query::v1beta1::PageRequest,
     >,
+    /// if true, return a dehydrated version of the supplier.
+    /// Why? This enables smaller response payloads to reduce pagination of the supplier list.
+    /// Example: Removes service_config_history and rev_share details from the response. See the implementation for more details.
+    #[prost(bool, tag = "3")]
+    pub dehydrated: bool,
     #[prost(oneof = "query_all_suppliers_request::Filter", tags = "2")]
     pub filter: ::core::option::Option<query_all_suppliers_request::Filter>,
 }

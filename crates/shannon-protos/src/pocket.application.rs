@@ -316,6 +316,7 @@ impl ::prost::Name for EventApplicationUnbondingCanceled {
 pub enum ApplicationUnbondingReason {
     Elective = 0,
     BelowMinStake = 1,
+    Migration = 2,
 }
 impl ApplicationUnbondingReason {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -326,6 +327,7 @@ impl ApplicationUnbondingReason {
         match self {
             Self::Elective => "APPLICATION_UNBONDING_REASON_ELECTIVE",
             Self::BelowMinStake => "APPLICATION_UNBONDING_REASON_BELOW_MIN_STAKE",
+            Self::Migration => "APPLICATION_UNBONDING_REASON_MIGRATION",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -333,6 +335,7 @@ impl ApplicationUnbondingReason {
         match value {
             "APPLICATION_UNBONDING_REASON_ELECTIVE" => Some(Self::Elective),
             "APPLICATION_UNBONDING_REASON_BELOW_MIN_STAKE" => Some(Self::BelowMinStake),
+            "APPLICATION_UNBONDING_REASON_MIGRATION" => Some(Self::Migration),
             _ => None,
         }
     }

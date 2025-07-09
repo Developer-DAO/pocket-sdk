@@ -237,7 +237,7 @@ pub struct EventClaimExpired {
     #[prost(uint64, tag = "5")]
     pub num_estimated_compute_units: u64,
     /// The uPOKT coin claimed to be rewarded for the work done as a function of
-    /// the number of estimated compute units and the compute uints to token multiplier.
+    /// the number of estimated compute units and the compute units to token multiplier.
     #[prost(message, optional, tag = "6")]
     pub claimed_upokt: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
 }
@@ -272,7 +272,7 @@ pub struct EventClaimSettled {
     #[prost(uint64, tag = "5")]
     pub num_estimated_compute_units: u64,
     /// The uPOKT coin claimed to be rewarded for the work done as a function of
-    /// the number of estimated compute units and the compute uints to token multiplier.
+    /// the number of estimated compute units and the compute units to token multiplier.
     #[prost(message, optional, tag = "6")]
     pub claimed_upokt: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
     /// SettlementResult holds mint, burn, and transfer operations on a per-claim basis.
@@ -343,6 +343,26 @@ impl ::prost::Name for EventSupplierSlashed {
     }
     fn type_url() -> ::prost::alloc::string::String {
         "/pocket.tokenomics.EventSupplierSlashed".into()
+    }
+}
+/// EventClaimDiscarded is emitted when a claim is discarded due to unexpected
+/// errors during settlement to prevent chain halt.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct EventClaimDiscarded {
+    #[prost(message, optional, tag = "1")]
+    pub claim: ::core::option::Option<super::proof::Claim>,
+    /// The error that caused the claim to be discarded.
+    #[prost(string, tag = "2")]
+    pub error: ::prost::alloc::string::String,
+}
+impl ::prost::Name for EventClaimDiscarded {
+    const NAME: &'static str = "EventClaimDiscarded";
+    const PACKAGE: &'static str = "pocket.tokenomics";
+    fn full_name() -> ::prost::alloc::string::String {
+        "pocket.tokenomics.EventClaimDiscarded".into()
+    }
+    fn type_url() -> ::prost::alloc::string::String {
+        "/pocket.tokenomics.EventClaimDiscarded".into()
     }
 }
 /// EventApplicationReimbursementRequest is emitted when an application requests
