@@ -155,6 +155,8 @@ pub enum RpcType {
     JsonRpc = 3,
     /// REST
     Rest = 4,
+    /// CometBFT (REST + JSON-RPC)
+    CometBft = 5,
 }
 impl RpcType {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -168,6 +170,7 @@ impl RpcType {
             Self::Websocket => "WEBSOCKET",
             Self::JsonRpc => "JSON_RPC",
             Self::Rest => "REST",
+            Self::CometBft => "COMET_BFT",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -178,6 +181,7 @@ impl RpcType {
             "WEBSOCKET" => Some(Self::Websocket),
             "JSON_RPC" => Some(Self::JsonRpc),
             "REST" => Some(Self::Rest),
+            "COMET_BFT" => Some(Self::CometBft),
             _ => None,
         }
     }
@@ -603,10 +607,7 @@ impl ::prost::Name for MsgUpdateParam {
 /// MsgUpdateParamResponse defines the response structure for executing a
 /// MsgUpdateParam message after a single param update.
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
-pub struct MsgUpdateParamResponse {
-    #[prost(message, optional, tag = "1")]
-    pub params: ::core::option::Option<Params>,
-}
+pub struct MsgUpdateParamResponse {}
 impl ::prost::Name for MsgUpdateParamResponse {
     const NAME: &'static str = "MsgUpdateParamResponse";
     const PACKAGE: &'static str = "pocket.shared";

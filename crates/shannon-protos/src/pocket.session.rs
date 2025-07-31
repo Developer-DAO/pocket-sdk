@@ -379,10 +379,7 @@ impl ::prost::Name for MsgUpdateParam {
     }
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
-pub struct MsgUpdateParamResponse {
-    #[prost(message, optional, tag = "1")]
-    pub params: ::core::option::Option<Params>,
-}
+pub struct MsgUpdateParamResponse {}
 impl ::prost::Name for MsgUpdateParamResponse {
     const NAME: &'static str = "MsgUpdateParamResponse";
     const PACKAGE: &'static str = "pocket.session";

@@ -724,11 +724,8 @@ impl ::prost::Name for MsgUpdateParam {
 }
 /// MsgUpdateParamResponse defines the response structure for executing a
 /// MsgUpdateParam message after a single param update.
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgUpdateParamResponse {
-    #[prost(message, optional, tag = "1")]
-    pub params: ::core::option::Option<Params>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParamResponse {}
 impl ::prost::Name for MsgUpdateParamResponse {
     const NAME: &'static str = "MsgUpdateParamResponse";
     const PACKAGE: &'static str = "pocket.service";
@@ -761,11 +758,8 @@ impl ::prost::Name for MsgAddService {
         "/pocket.service.MsgAddService".into()
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgAddServiceResponse {
-    #[prost(message, optional, tag = "1")]
-    pub service: ::core::option::Option<super::shared::Service>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgAddServiceResponse {}
 impl ::prost::Name for MsgAddServiceResponse {
     const NAME: &'static str = "MsgAddServiceResponse";
     const PACKAGE: &'static str = "pocket.service";

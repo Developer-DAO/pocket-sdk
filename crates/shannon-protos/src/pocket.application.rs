@@ -706,11 +706,8 @@ impl ::prost::Name for MsgStakeApplication {
         "/pocket.application.MsgStakeApplication".into()
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgStakeApplicationResponse {
-    #[prost(message, optional, tag = "1")]
-    pub application: ::core::option::Option<Application>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgStakeApplicationResponse {}
 impl ::prost::Name for MsgStakeApplicationResponse {
     const NAME: &'static str = "MsgStakeApplicationResponse";
     const PACKAGE: &'static str = "pocket.application";
@@ -736,11 +733,8 @@ impl ::prost::Name for MsgUnstakeApplication {
         "/pocket.application.MsgUnstakeApplication".into()
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgUnstakeApplicationResponse {
-    #[prost(message, optional, tag = "1")]
-    pub application: ::core::option::Option<Application>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUnstakeApplicationResponse {}
 impl ::prost::Name for MsgUnstakeApplicationResponse {
     const NAME: &'static str = "MsgUnstakeApplicationResponse";
     const PACKAGE: &'static str = "pocket.application";
@@ -770,11 +764,8 @@ impl ::prost::Name for MsgDelegateToGateway {
         "/pocket.application.MsgDelegateToGateway".into()
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgDelegateToGatewayResponse {
-    #[prost(message, optional, tag = "1")]
-    pub application: ::core::option::Option<Application>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgDelegateToGatewayResponse {}
 impl ::prost::Name for MsgDelegateToGatewayResponse {
     const NAME: &'static str = "MsgDelegateToGatewayResponse";
     const PACKAGE: &'static str = "pocket.application";
@@ -804,11 +795,8 @@ impl ::prost::Name for MsgUndelegateFromGateway {
         "/pocket.application.MsgUndelegateFromGateway".into()
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgUndelegateFromGatewayResponse {
-    #[prost(message, optional, tag = "1")]
-    pub application: ::core::option::Option<Application>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUndelegateFromGatewayResponse {}
 impl ::prost::Name for MsgUndelegateFromGatewayResponse {
     const NAME: &'static str = "MsgUndelegateFromGatewayResponse";
     const PACKAGE: &'static str = "pocket.application";
@@ -836,11 +824,8 @@ impl ::prost::Name for MsgTransferApplication {
         "/pocket.application.MsgTransferApplication".into()
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgTransferApplicationResponse {
-    #[prost(message, optional, tag = "1")]
-    pub application: ::core::option::Option<Application>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgTransferApplicationResponse {}
 impl ::prost::Name for MsgTransferApplicationResponse {
     const NAME: &'static str = "MsgTransferApplicationResponse";
     const PACKAGE: &'static str = "pocket.application";
@@ -881,11 +866,8 @@ impl ::prost::Name for MsgUpdateParam {
         "/pocket.application.MsgUpdateParam".into()
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgUpdateParamResponse {
-    #[prost(message, optional, tag = "1")]
-    pub params: ::core::option::Option<Params>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParamResponse {}
 impl ::prost::Name for MsgUpdateParamResponse {
     const NAME: &'static str = "MsgUpdateParamResponse";
     const PACKAGE: &'static str = "pocket.application";

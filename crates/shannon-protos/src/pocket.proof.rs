@@ -164,18 +164,40 @@ impl ClaimProofStatus {
         }
     }
 }
+/// Next index: 13
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventClaimCreated {
-    #[prost(message, optional, tag = "1")]
-    pub claim: ::core::option::Option<Claim>,
     #[prost(uint64, tag = "2")]
     pub num_relays: u64,
     #[prost(uint64, tag = "4")]
     pub num_claimed_compute_units: u64,
     #[prost(uint64, tag = "5")]
     pub num_estimated_compute_units: u64,
-    #[prost(message, optional, tag = "6")]
-    pub claimed_upokt: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
+    #[prost(string, tag = "7")]
+    pub claimed_upokt: ::prost::alloc::string::String,
+    /// The Service ID to which the claim corresponds.
+    #[prost(string, tag = "8")]
+    pub service_id: ::prost::alloc::string::String,
+    /// The address of the application which participated in the claimed session.
+    #[prost(string, tag = "9")]
+    pub application_address: ::prost::alloc::string::String,
+    /// The end block height of the session to which the claim corresponds.
+    #[prost(int64, tag = "10")]
+    pub session_end_block_height: i64,
+    /// The validation status of the claim.
+    /// DEV_NOTE: This field uses the integer representation of the ClaimProofStatus
+    /// enum to minimize onchain disk utilization. This is necessary because event
+    /// data is not always protobuf-encoded in the various places and formats that it
+    /// appears in onchain leveldb databases.
+    /// Enum values:
+    ///    PENDING_VALIDATION = 0;
+    ///    VALIDATED = 1;
+    ///    INVALID = 2;
+    #[prost(int32, tag = "11")]
+    pub claim_proof_status_int: i32,
+    /// The operator address of the supplier which submitted the claim.
+    #[prost(string, tag = "12")]
+    pub supplier_operator_address: ::prost::alloc::string::String,
 }
 impl ::prost::Name for EventClaimCreated {
     const NAME: &'static str = "EventClaimCreated";
@@ -188,18 +210,41 @@ impl ::prost::Name for EventClaimCreated {
     }
 }
 /// TODO_TEST: Add coverage for claim updates.
+///
+/// Next index: 13
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventClaimUpdated {
-    #[prost(message, optional, tag = "1")]
-    pub claim: ::core::option::Option<Claim>,
     #[prost(uint64, tag = "2")]
     pub num_relays: u64,
     #[prost(uint64, tag = "4")]
     pub num_claimed_compute_units: u64,
     #[prost(uint64, tag = "5")]
     pub num_estimated_compute_units: u64,
-    #[prost(message, optional, tag = "6")]
-    pub claimed_upokt: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
+    #[prost(string, tag = "7")]
+    pub claimed_upokt: ::prost::alloc::string::String,
+    /// The Service ID to which the claim corresponds.
+    #[prost(string, tag = "8")]
+    pub service_id: ::prost::alloc::string::String,
+    /// The address of the application which participated in the claimed session.
+    #[prost(string, tag = "9")]
+    pub application_address: ::prost::alloc::string::String,
+    /// The end block height of the session to which the claim corresponds.
+    #[prost(int64, tag = "10")]
+    pub session_end_block_height: i64,
+    /// The validation status of the claim.
+    /// DEV_NOTE: This field uses the integer representation of the ClaimProofStatus
+    /// enum to minimize onchain disk utilization. This is necessary because event
+    /// data is not always protobuf-encoded in the various places and formats that it
+    /// appears in onchain leveldb databases.
+    /// Enum values:
+    ///    PENDING_VALIDATION = 0;
+    ///    VALIDATED = 1;
+    ///    INVALID = 2;
+    #[prost(int32, tag = "11")]
+    pub claim_proof_status_int: i32,
+    /// The operator address of the supplier which updated the claim.
+    #[prost(string, tag = "12")]
+    pub supplier_operator_address: ::prost::alloc::string::String,
 }
 impl ::prost::Name for EventClaimUpdated {
     const NAME: &'static str = "EventClaimUpdated";
@@ -211,18 +256,40 @@ impl ::prost::Name for EventClaimUpdated {
         "/pocket.proof.EventClaimUpdated".into()
     }
 }
+/// Next index: 13
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventProofSubmitted {
-    #[prost(message, optional, tag = "1")]
-    pub claim: ::core::option::Option<Claim>,
     #[prost(uint64, tag = "3")]
     pub num_relays: u64,
     #[prost(uint64, tag = "4")]
     pub num_claimed_compute_units: u64,
     #[prost(uint64, tag = "5")]
     pub num_estimated_compute_units: u64,
-    #[prost(message, optional, tag = "6")]
-    pub claimed_upokt: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
+    #[prost(string, tag = "7")]
+    pub claimed_upokt: ::prost::alloc::string::String,
+    /// The Service ID to which the claim corresponds.
+    #[prost(string, tag = "8")]
+    pub service_id: ::prost::alloc::string::String,
+    /// The address of the application which participated in the claimed session.
+    #[prost(string, tag = "9")]
+    pub application_address: ::prost::alloc::string::String,
+    /// The end block height of the session to which the claim corresponds.
+    #[prost(int64, tag = "10")]
+    pub session_end_block_height: i64,
+    /// The validation status of the claim.
+    /// DEV_NOTE: This field uses the integer representation of the ClaimProofStatus
+    /// enum to minimize onchain disk utilization. This is necessary because event
+    /// data is not always protobuf-encoded in the various places and formats that it
+    /// appears in onchain leveldb databases.
+    /// Enum values:
+    ///    PENDING_VALIDATION = 0;
+    ///    VALIDATED = 1;
+    ///    INVALID = 2;
+    #[prost(int32, tag = "11")]
+    pub claim_proof_status_int: i32,
+    /// The operator address of the supplier which submitted the proof.
+    #[prost(string, tag = "12")]
+    pub supplier_operator_address: ::prost::alloc::string::String,
 }
 impl ::prost::Name for EventProofSubmitted {
     const NAME: &'static str = "EventProofSubmitted";
@@ -235,18 +302,41 @@ impl ::prost::Name for EventProofSubmitted {
     }
 }
 /// TODO_TEST: Add coverage for proof updates.
+///
+/// Next index: 13
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventProofUpdated {
-    #[prost(message, optional, tag = "1")]
-    pub claim: ::core::option::Option<Claim>,
     #[prost(uint64, tag = "3")]
     pub num_relays: u64,
     #[prost(uint64, tag = "4")]
     pub num_claimed_compute_units: u64,
     #[prost(uint64, tag = "5")]
     pub num_estimated_compute_units: u64,
-    #[prost(message, optional, tag = "6")]
-    pub claimed_upokt: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
+    #[prost(string, tag = "7")]
+    pub claimed_upokt: ::prost::alloc::string::String,
+    /// The Service ID to which the claim corresponds.
+    #[prost(string, tag = "8")]
+    pub service_id: ::prost::alloc::string::String,
+    /// The address of the application which participated in the claimed session.
+    #[prost(string, tag = "9")]
+    pub application_address: ::prost::alloc::string::String,
+    /// The end block height of the session to which the claim corresponds.
+    #[prost(int64, tag = "10")]
+    pub session_end_block_height: i64,
+    /// The validation status of the claim.
+    /// DEV_NOTE: This field uses the integer representation of the ClaimProofStatus
+    /// enum to minimize onchain disk utilization. This is necessary because event
+    /// data is not always protobuf-encoded in the various places and formats that it
+    /// appears in onchain leveldb databases.
+    /// Enum values:
+    ///    PENDING_VALIDATION = 0;
+    ///    VALIDATED = 1;
+    ///    INVALID = 2;
+    #[prost(int32, tag = "11")]
+    pub claim_proof_status_int: i32,
+    /// The operator address of the supplier which updated the proof.
+    #[prost(string, tag = "12")]
+    pub supplier_operator_address: ::prost::alloc::string::String,
 }
 impl ::prost::Name for EventProofUpdated {
     const NAME: &'static str = "EventProofUpdated";
@@ -261,17 +351,38 @@ impl ::prost::Name for EventProofUpdated {
 /// Event emitted after a proof has been checked for validity in the proof module's
 /// EndBlocker.
 ///
-/// Next index: 6
+/// Next index: 12
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventProofValidityChecked {
-    #[prost(message, optional, tag = "5")]
-    pub claim: ::core::option::Option<Claim>,
     #[prost(uint64, tag = "2")]
     pub block_height: u64,
     /// reason is the string representation of the error that led to the proof being
     /// marked as invalid (e.g. "invalid closest merkle proof", "invalid relay request signature")
     #[prost(string, tag = "4")]
     pub failure_reason: ::prost::alloc::string::String,
+    /// The Service ID to which the claim corresponds.
+    #[prost(string, tag = "8")]
+    pub service_id: ::prost::alloc::string::String,
+    /// The address of the application which participated in the claimed session.
+    #[prost(string, tag = "9")]
+    pub application_address: ::prost::alloc::string::String,
+    /// The end block height of the session to which the claim corresponds.
+    #[prost(int64, tag = "10")]
+    pub session_end_block_height: i64,
+    /// The validation status of the claim.
+    /// DEV_NOTE: This field uses the integer representation of the ClaimProofStatus
+    /// enum to minimize onchain disk utilization. This is necessary because event
+    /// data is not always protobuf-encoded in the various places and formats that it
+    /// appears in onchain leveldb databases.
+    /// Enum values:
+    ///    PENDING_VALIDATION = 0;
+    ///    VALIDATED = 1;
+    ///    INVALID = 2;
+    #[prost(int32, tag = "11")]
+    pub claim_proof_status_int: i32,
+    /// The operator address of the supplier whose proof was checked.
+    #[prost(string, tag = "12")]
+    pub supplier_operator_address: ::prost::alloc::string::String,
 }
 impl ::prost::Name for EventProofValidityChecked {
     const NAME: &'static str = "EventProofValidityChecked";
@@ -825,11 +936,8 @@ impl ::prost::Name for MsgUpdateParam {
 }
 /// MsgUpdateParamResponse defines the response structure for executing a
 /// MsgUpdateParam message after a single param update.
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgUpdateParamResponse {
-    #[prost(message, optional, tag = "1")]
-    pub params: ::core::option::Option<Params>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParamResponse {}
 impl ::prost::Name for MsgUpdateParamResponse {
     const NAME: &'static str = "MsgUpdateParamResponse";
     const PACKAGE: &'static str = "pocket.proof";
@@ -860,11 +968,8 @@ impl ::prost::Name for MsgCreateClaim {
         "/pocket.proof.MsgCreateClaim".into()
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgCreateClaimResponse {
-    #[prost(message, optional, tag = "1")]
-    pub claim: ::core::option::Option<Claim>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgCreateClaimResponse {}
 impl ::prost::Name for MsgCreateClaimResponse {
     const NAME: &'static str = "MsgCreateClaimResponse";
     const PACKAGE: &'static str = "pocket.proof";
@@ -895,11 +1000,8 @@ impl ::prost::Name for MsgSubmitProof {
         "/pocket.proof.MsgSubmitProof".into()
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgSubmitProofResponse {
-    #[prost(message, optional, tag = "1")]
-    pub proof: ::core::option::Option<Proof>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgSubmitProofResponse {}
 impl ::prost::Name for MsgSubmitProofResponse {
     const NAME: &'static str = "MsgSubmitProofResponse";
     const PACKAGE: &'static str = "pocket.proof";

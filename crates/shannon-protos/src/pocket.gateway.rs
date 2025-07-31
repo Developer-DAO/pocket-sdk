@@ -465,11 +465,8 @@ impl ::prost::Name for MsgStakeGateway {
         "/pocket.gateway.MsgStakeGateway".into()
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgStakeGatewayResponse {
-    #[prost(message, optional, tag = "1")]
-    pub gateway: ::core::option::Option<Gateway>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgStakeGatewayResponse {}
 impl ::prost::Name for MsgStakeGatewayResponse {
     const NAME: &'static str = "MsgStakeGatewayResponse";
     const PACKAGE: &'static str = "pocket.gateway";
@@ -496,11 +493,8 @@ impl ::prost::Name for MsgUnstakeGateway {
         "/pocket.gateway.MsgUnstakeGateway".into()
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgUnstakeGatewayResponse {
-    #[prost(message, optional, tag = "1")]
-    pub gateway: ::core::option::Option<Gateway>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUnstakeGatewayResponse {}
 impl ::prost::Name for MsgUnstakeGatewayResponse {
     const NAME: &'static str = "MsgUnstakeGatewayResponse";
     const PACKAGE: &'static str = "pocket.gateway";
@@ -540,11 +534,8 @@ impl ::prost::Name for MsgUpdateParam {
         "/pocket.gateway.MsgUpdateParam".into()
     }
 }
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgUpdateParamResponse {
-    #[prost(message, optional, tag = "1")]
-    pub params: ::core::option::Option<Params>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParamResponse {}
 impl ::prost::Name for MsgUpdateParamResponse {
     const NAME: &'static str = "MsgUpdateParamResponse";
     const PACKAGE: &'static str = "pocket.gateway";

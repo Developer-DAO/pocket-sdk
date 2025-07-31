@@ -180,22 +180,22 @@ impl ::prost::Name for EventImportMorseClaimableAccounts {
 }
 /// EventMorseAccountClaimed
 /// - Emitted when a MorseAccount is claimed on-chain
+///
+/// Next index: 6
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventMorseAccountClaimed {
     /// Shannon session end height in which the claim was committed
     #[prost(int64, tag = "1")]
     pub session_end_height: i64,
-    /// Unstaked balance claimed from Morse
-    #[prost(message, optional, tag = "2")]
-    pub claimed_balance: ::core::option::Option<
-        super::super::cosmos::base::v1beta1::Coin,
-    >,
     /// bech32-encoded Shannon address to mint claimed balance
     #[prost(string, tag = "3")]
     pub shannon_dest_address: ::prost::alloc::string::String,
     /// Hex-encoded Morse account address whose balance was claimed
     #[prost(string, tag = "4")]
     pub morse_src_address: ::prost::alloc::string::String,
+    /// Unstaked balance claimed from Morse
+    #[prost(string, tag = "5")]
+    pub claimed_balance: ::prost::alloc::string::String,
 }
 impl ::prost::Name for EventMorseAccountClaimed {
     const NAME: &'static str = "EventMorseAccountClaimed";
@@ -209,29 +209,27 @@ impl ::prost::Name for EventMorseAccountClaimed {
 }
 /// EventMorseApplicationClaimed
 /// - Emitted when a MorseAccount is claimed on-chain as a staked application
+///
+/// Next index: 8
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventMorseApplicationClaimed {
     /// Shannon session end height in which the claim was committed
     #[prost(int64, tag = "1")]
     pub session_end_height: i64,
-    /// Unstaked balance claimed from Morse
-    #[prost(message, optional, tag = "2")]
-    pub claimed_balance: ::core::option::Option<
-        super::super::cosmos::base::v1beta1::Coin,
-    >,
     /// Hex-encoded Morse account address whose balance was claimed
     #[prost(string, tag = "3")]
     pub morse_src_address: ::prost::alloc::string::String,
-    /// Application stake claimed as a result of the claim
-    /// - Equivalent to Morse application staked amount
-    #[prost(message, optional, tag = "4")]
-    pub claimed_application_stake: ::core::option::Option<
-        super::super::cosmos::base::v1beta1::Coin,
-    >,
     /// Application staked as a result of the claim
     /// - Mirrors Morse application stake
     #[prost(message, optional, tag = "5")]
     pub application: ::core::option::Option<super::application::Application>,
+    /// Unstaked balance claimed from Morse
+    #[prost(string, tag = "6")]
+    pub claimed_balance: ::prost::alloc::string::String,
+    /// Application stake claimed as a result of the claim
+    /// - Equivalent to Morse application staked amount
+    #[prost(string, tag = "7")]
+    pub claimed_application_stake: ::prost::alloc::string::String,
 }
 impl ::prost::Name for EventMorseApplicationClaimed {
     const NAME: &'static str = "EventMorseApplicationClaimed";
@@ -245,16 +243,16 @@ impl ::prost::Name for EventMorseApplicationClaimed {
 }
 /// EventMorseSupplierClaimed
 /// - Emitted when a MorseAccount is claimed on-chain as a staked Supplier
+///
+/// Next index: 11
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventMorseSupplierClaimed {
     /// Shannon session end height in which the claim was committed
     #[prost(int64, tag = "1")]
     pub session_end_height: i64,
     /// Unstaked balance claimed from Morse
-    #[prost(message, optional, tag = "2")]
-    pub claimed_balance: ::core::option::Option<
-        super::super::cosmos::base::v1beta1::Coin,
-    >,
+    #[prost(string, tag = "9")]
+    pub claimed_balance: ::prost::alloc::string::String,
     /// The hex-encoded address of the Morse non-custodial (i.e. operator) account.
     /// - Unstaked balance was migrated 1:1
     /// - Stake was migrated 1:1 from morse_node_address to shannon_operator_address
@@ -280,10 +278,8 @@ pub struct EventMorseSupplierClaimed {
     pub claim_signer_type: i32,
     /// Supplier stake claimed as a result of the claim
     /// - Equivalent to Morse supplier staked amount
-    #[prost(message, optional, tag = "4")]
-    pub claimed_supplier_stake: ::core::option::Option<
-        super::super::cosmos::base::v1beta1::Coin,
-    >,
+    #[prost(string, tag = "10")]
+    pub claimed_supplier_stake: ::prost::alloc::string::String,
     /// Supplier staked as a result of the claim
     /// - Mirrors Morse supplier stake
     #[prost(message, optional, tag = "5")]
@@ -301,6 +297,8 @@ impl ::prost::Name for EventMorseSupplierClaimed {
 }
 /// EventMorseAccountRecovered
 /// - Emitted when a Morse account is recovered on-chain
+///
+/// Next index: 6
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventMorseAccountRecovered {
     /// The session end height (on Shannon) in which the recovery was committed (i.e. claimed).
@@ -309,10 +307,8 @@ pub struct EventMorseAccountRecovered {
     /// The total balance which was recovered:
     /// - Includes both unstaked and staked balances (consolidated)
     /// - Auto-liquidates both unstaked and staked balances at once
-    #[prost(message, optional, tag = "2")]
-    pub recovered_balance: ::core::option::Option<
-        super::super::cosmos::base::v1beta1::Coin,
-    >,
+    #[prost(string, tag = "5")]
+    pub recovered_balance: ::prost::alloc::string::String,
     /// The bech32-encoded address of the Shannon account to which the recovered balance was minted.
     #[prost(string, tag = "3")]
     pub shannon_dest_address: ::prost::alloc::string::String,
@@ -1010,15 +1006,8 @@ impl ::prost::Name for MsgImportMorseClaimableAccounts {
 /// - Reports the number of claimable accounts imported
 ///
 /// Next free index: 3
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgImportMorseClaimableAccountsResponse {
-    /// On-chain computed sha256 hash of the morse_account_state provided in the corresponding MsgCreateMorseAccountState.
-    #[prost(bytes = "vec", tag = "1")]
-    pub state_hash: ::prost::alloc::vec::Vec<u8>,
-    /// Number of claimable accounts (EOAs) collected from Morse state export.
-    #[prost(uint64, tag = "2")]
-    pub num_accounts: u64,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgImportMorseClaimableAccountsResponse {}
 impl ::prost::Name for MsgImportMorseClaimableAccountsResponse {
     const NAME: &'static str = "MsgImportMorseClaimableAccountsResponse";
     const PACKAGE: &'static str = "pocket.migration";
@@ -1073,21 +1062,8 @@ impl ::prost::Name for MsgClaimMorseAccount {
 /// - Reports the claimed balance and commit height
 ///
 /// Next free index: 4
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgClaimMorseAccountResponse {
-    /// The hex-encoded address of the Morse account whose balance will be claimed.
-    /// E.g.: 00f9900606fa3d5c9179fc0c8513078a53a2073e
-    #[prost(string, tag = "1")]
-    pub morse_src_address: ::prost::alloc::string::String,
-    /// The balance which was claimed.
-    #[prost(message, optional, tag = "2")]
-    pub claimed_balance: ::core::option::Option<
-        super::super::cosmos::base::v1beta1::Coin,
-    >,
-    /// The session end height (on Shannon) in which the claim was committed (i.e. claimed).
-    #[prost(int64, tag = "3")]
-    pub session_end_height: i64,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgClaimMorseAccountResponse {}
 impl ::prost::Name for MsgClaimMorseAccountResponse {
     const NAME: &'static str = "MsgClaimMorseAccountResponse";
     const PACKAGE: &'static str = "pocket.migration";
@@ -1147,29 +1123,8 @@ impl ::prost::Name for MsgClaimMorseApplication {
 /// - Returns the staked application
 ///
 /// Next free index: 6
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgClaimMorseApplicationResponse {
-    /// The hex-encoded address of the Morse account whose balance will be claimed.
-    #[prost(string, tag = "1")]
-    pub morse_src_address: ::prost::alloc::string::String,
-    /// The unstaked balance which was claimed.
-    #[prost(message, optional, tag = "2")]
-    pub claimed_balance: ::core::option::Option<
-        super::super::cosmos::base::v1beta1::Coin,
-    >,
-    /// The stake of the application which was staked as a result of the claim.
-    /// If the application was already staked, this amount does not include the initial stake (i.e. only the portion which was "claimed").
-    #[prost(message, optional, tag = "3")]
-    pub claimed_application_stake: ::core::option::Option<
-        super::super::cosmos::base::v1beta1::Coin,
-    >,
-    /// The session end height (on Shannon) in which the claim was committed (i.e. claimed).
-    #[prost(int64, tag = "4")]
-    pub session_end_height: i64,
-    /// The application which was staked as a result of the claim.
-    #[prost(message, optional, tag = "5")]
-    pub application: ::core::option::Option<super::application::Application>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgClaimMorseApplicationResponse {}
 impl ::prost::Name for MsgClaimMorseApplicationResponse {
     const NAME: &'static str = "MsgClaimMorseApplicationResponse";
     const PACKAGE: &'static str = "pocket.migration";
@@ -1260,46 +1215,8 @@ impl ::prost::Name for MsgClaimMorseSupplier {
 /// - Includes claim signer type and signer address
 ///
 /// Next free index: 10
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgClaimMorseSupplierResponse {
-    /// The hex-encoded address of the Morse non-custodial (i.e. operator) account.
-    /// - Unstaked balance will be migrated 1:1
-    /// - Stake will be migrated 1:1 from morse_node_address to shannon_operator_address
-    /// - Morse non-custodial (i.e. operator) address.
-    /// If morse_output_address is not set, this is the custodial address.
-    /// - See 'pocket nodes --help' for more information. Note that this refers to the Morse CLI.
-    /// E.g.: 00f9900606fa3d5c9179fc0c8513078a53a2073e
-    #[prost(string, tag = "9")]
-    pub morse_node_address: ::prost::alloc::string::String,
-    /// Hex-encoded address of the Morse output account/wallet associated with the Morse node/supplier.
-    /// - E.g.: 00f9900606fa3d5c9179fc0c8513078a53a2073e
-    /// - Morse custodial (i.e. owner) address, which owns the staked tokens of the operator.
-    ///    See 'pocket nodes --help' for more information. Note that this refers to the Morse CLI.
-    #[prost(string, tag = "8")]
-    pub morse_output_address: ::prost::alloc::string::String,
-    /// The type of supplier claim signer, indicating which actor executed the claim
-    /// and whether it was a custodial or non-custodial claim.
-    /// - MORSE_SUPPLIER_CLAIM_SIGNER_TYPE_NON_CUSTODIAL_SIGNED_BY_ADDR
-    /// - MORSE_SUPPLIER_CLAIM_SIGNER_TYPE_CUSTODIAL_SIGNED_BY_OPERATOR
-    /// - MORSE_SUPPLIER_CLAIM_SIGNER_TYPE_CUSTODIAL_SIGNED_BY_OWNER
-    #[prost(enumeration = "MorseSupplierClaimSignerType", tag = "7")]
-    pub claim_signer_type: i32,
-    /// The unstaked balance which was claimed.
-    #[prost(message, optional, tag = "2")]
-    pub claimed_balance: ::core::option::Option<
-        super::super::cosmos::base::v1beta1::Coin,
-    >,
-    #[prost(message, optional, tag = "3")]
-    pub claimed_supplier_stake: ::core::option::Option<
-        super::super::cosmos::base::v1beta1::Coin,
-    >,
-    /// The session end height (on Shannon) in which the claim was committed (i.e. claimed).
-    #[prost(int64, tag = "4")]
-    pub session_end_height: i64,
-    /// The supplier which was staked as a result of the claim.
-    #[prost(message, optional, tag = "5")]
-    pub supplier: ::core::option::Option<super::shared::Supplier>,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgClaimMorseSupplierResponse {}
 impl ::prost::Name for MsgClaimMorseSupplierResponse {
     const NAME: &'static str = "MsgClaimMorseSupplierResponse";
     const PACKAGE: &'static str = "pocket.migration";
@@ -1357,29 +1274,8 @@ impl ::prost::Name for MsgRecoverMorseAccount {
 /// - Returns the destination Shannon address
 ///
 /// Next free index: 5
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MsgRecoverMorseAccountResponse {
-    /// EITHER:
-    /// - The hex-encoded address of the Morse account whose stake(s) and/or balances were recovered.
-    ///    This address MAY be invalid but NEVER empty.
-    ///    E.g.: 00f9900606fa3d5c9179fc0c8513078a53a2073e
-    /// - The name of a Morse module account whose balance was recovered.
-    ///    E.g. "dao" or "fee-collector"
-    #[prost(string, tag = "1")]
-    pub morse_src_address: ::prost::alloc::string::String,
-    /// The sum of any unstaked and staked balances which were recovered.
-    #[prost(message, optional, tag = "2")]
-    pub recovered_balance: ::core::option::Option<
-        super::super::cosmos::base::v1beta1::Coin,
-    >,
-    /// The session end height (on Shannon) in which the recovery was committed (i.e. recovered).
-    #[prost(int64, tag = "3")]
-    pub session_end_height: i64,
-    /// The bech32-encoded address of the Shannon account to which the Morse account's stake(s) and/or
-    /// balance(s) were recovered.
-    #[prost(string, tag = "4")]
-    pub shannon_dest_address: ::prost::alloc::string::String,
-}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgRecoverMorseAccountResponse {}
 impl ::prost::Name for MsgRecoverMorseAccountResponse {
     const NAME: &'static str = "MsgRecoverMorseAccountResponse";
     const PACKAGE: &'static str = "pocket.migration";
