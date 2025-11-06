@@ -91,7 +91,7 @@ impl ::prost::Name for ModToModTransfer {
 }
 /// SettlementOpReason is a distinct, tlm-specific causal reason for a given operation.
 ///
-/// Next free index: 20
+/// Next free index: 25
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum SettlementOpReason {
@@ -108,17 +108,19 @@ pub enum SettlementOpReason {
     /// MintEqualsBurnTlm: Reward distribution
     TlmRelayBurnEqualsMintSupplierShareholderRewardDistribution = 4,
     TlmRelayBurnEqualsMintDaoRewardDistribution = 15,
-    TlmRelayBurnEqualsMintProposerRewardDistribution = 16,
     TlmRelayBurnEqualsMintSourceOwnerRewardDistribution = 17,
     TlmRelayBurnEqualsMintApplicationRewardDistribution = 18,
+    TlmRelayBurnEqualsMintValidatorRewardDistribution = 20,
+    TlmRelayBurnEqualsMintDelegatorRewardDistribution = 23,
     /// GlobalMintTLM: Inflation
     TlmGlobalMintInflation = 3,
     /// GlobalMintTLM: Reward distribution
     TlmGlobalMintDaoRewardDistribution = 5,
-    TlmGlobalMintProposerRewardDistribution = 6,
     TlmGlobalMintSupplierShareholderRewardDistribution = 7,
     TlmGlobalMintSourceOwnerRewardDistribution = 8,
     TlmGlobalMintApplicationRewardDistribution = 9,
+    TlmGlobalMintValidatorRewardDistribution = 21,
+    TlmGlobalMintDelegatorRewardDistribution = 24,
     /// GlobalMintTLM: Self-servicing mitigation
     TlmGlobalMintReimbursementRequestEscrowDaoTransfer = 10,
     /// GlobalMintTLM: Module accounting
@@ -154,21 +156,21 @@ impl SettlementOpReason {
             Self::TlmRelayBurnEqualsMintDaoRewardDistribution => {
                 "TLM_RELAY_BURN_EQUALS_MINT_DAO_REWARD_DISTRIBUTION"
             }
-            Self::TlmRelayBurnEqualsMintProposerRewardDistribution => {
-                "TLM_RELAY_BURN_EQUALS_MINT_PROPOSER_REWARD_DISTRIBUTION"
-            }
             Self::TlmRelayBurnEqualsMintSourceOwnerRewardDistribution => {
                 "TLM_RELAY_BURN_EQUALS_MINT_SOURCE_OWNER_REWARD_DISTRIBUTION"
             }
             Self::TlmRelayBurnEqualsMintApplicationRewardDistribution => {
                 "TLM_RELAY_BURN_EQUALS_MINT_APPLICATION_REWARD_DISTRIBUTION"
             }
+            Self::TlmRelayBurnEqualsMintValidatorRewardDistribution => {
+                "TLM_RELAY_BURN_EQUALS_MINT_VALIDATOR_REWARD_DISTRIBUTION"
+            }
+            Self::TlmRelayBurnEqualsMintDelegatorRewardDistribution => {
+                "TLM_RELAY_BURN_EQUALS_MINT_DELEGATOR_REWARD_DISTRIBUTION"
+            }
             Self::TlmGlobalMintInflation => "TLM_GLOBAL_MINT_INFLATION",
             Self::TlmGlobalMintDaoRewardDistribution => {
                 "TLM_GLOBAL_MINT_DAO_REWARD_DISTRIBUTION"
-            }
-            Self::TlmGlobalMintProposerRewardDistribution => {
-                "TLM_GLOBAL_MINT_PROPOSER_REWARD_DISTRIBUTION"
             }
             Self::TlmGlobalMintSupplierShareholderRewardDistribution => {
                 "TLM_GLOBAL_MINT_SUPPLIER_SHAREHOLDER_REWARD_DISTRIBUTION"
@@ -178,6 +180,12 @@ impl SettlementOpReason {
             }
             Self::TlmGlobalMintApplicationRewardDistribution => {
                 "TLM_GLOBAL_MINT_APPLICATION_REWARD_DISTRIBUTION"
+            }
+            Self::TlmGlobalMintValidatorRewardDistribution => {
+                "TLM_GLOBAL_MINT_VALIDATOR_REWARD_DISTRIBUTION"
+            }
+            Self::TlmGlobalMintDelegatorRewardDistribution => {
+                "TLM_GLOBAL_MINT_DELEGATOR_REWARD_DISTRIBUTION"
             }
             Self::TlmGlobalMintReimbursementRequestEscrowDaoTransfer => {
                 "TLM_GLOBAL_MINT_REIMBURSEMENT_REQUEST_ESCROW_DAO_TRANSFER"
@@ -215,21 +223,21 @@ impl SettlementOpReason {
             "TLM_RELAY_BURN_EQUALS_MINT_DAO_REWARD_DISTRIBUTION" => {
                 Some(Self::TlmRelayBurnEqualsMintDaoRewardDistribution)
             }
-            "TLM_RELAY_BURN_EQUALS_MINT_PROPOSER_REWARD_DISTRIBUTION" => {
-                Some(Self::TlmRelayBurnEqualsMintProposerRewardDistribution)
-            }
             "TLM_RELAY_BURN_EQUALS_MINT_SOURCE_OWNER_REWARD_DISTRIBUTION" => {
                 Some(Self::TlmRelayBurnEqualsMintSourceOwnerRewardDistribution)
             }
             "TLM_RELAY_BURN_EQUALS_MINT_APPLICATION_REWARD_DISTRIBUTION" => {
                 Some(Self::TlmRelayBurnEqualsMintApplicationRewardDistribution)
             }
+            "TLM_RELAY_BURN_EQUALS_MINT_VALIDATOR_REWARD_DISTRIBUTION" => {
+                Some(Self::TlmRelayBurnEqualsMintValidatorRewardDistribution)
+            }
+            "TLM_RELAY_BURN_EQUALS_MINT_DELEGATOR_REWARD_DISTRIBUTION" => {
+                Some(Self::TlmRelayBurnEqualsMintDelegatorRewardDistribution)
+            }
             "TLM_GLOBAL_MINT_INFLATION" => Some(Self::TlmGlobalMintInflation),
             "TLM_GLOBAL_MINT_DAO_REWARD_DISTRIBUTION" => {
                 Some(Self::TlmGlobalMintDaoRewardDistribution)
-            }
-            "TLM_GLOBAL_MINT_PROPOSER_REWARD_DISTRIBUTION" => {
-                Some(Self::TlmGlobalMintProposerRewardDistribution)
             }
             "TLM_GLOBAL_MINT_SUPPLIER_SHAREHOLDER_REWARD_DISTRIBUTION" => {
                 Some(Self::TlmGlobalMintSupplierShareholderRewardDistribution)
@@ -239,6 +247,12 @@ impl SettlementOpReason {
             }
             "TLM_GLOBAL_MINT_APPLICATION_REWARD_DISTRIBUTION" => {
                 Some(Self::TlmGlobalMintApplicationRewardDistribution)
+            }
+            "TLM_GLOBAL_MINT_VALIDATOR_REWARD_DISTRIBUTION" => {
+                Some(Self::TlmGlobalMintValidatorRewardDistribution)
+            }
+            "TLM_GLOBAL_MINT_DELEGATOR_REWARD_DISTRIBUTION" => {
+                Some(Self::TlmGlobalMintDelegatorRewardDistribution)
             }
             "TLM_GLOBAL_MINT_REIMBURSEMENT_REQUEST_ESCROW_DAO_TRANSFER" => {
                 Some(Self::TlmGlobalMintReimbursementRequestEscrowDaoTransfer)
@@ -646,6 +660,9 @@ pub struct MintEqualsBurnClaimDistribution {
     /// dao - % of claimable tokens sent to the DAO reward address.
     #[prost(double, tag = "1")]
     pub dao: f64,
+    /// TODO_TECHDEBT: Rename "proposer" to "validators" to reflect the work done in #1753.
+    /// This will span all references to the term "proposer" across documentation, functions, protobufs, variables, tooling, etc..
+    ///
     /// proposer - % of claimable tokens sent to the block proposer (i.e. validator0) account address.
     #[prost(double, tag = "2")]
     pub proposer: f64,

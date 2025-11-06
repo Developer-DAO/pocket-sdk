@@ -1,7 +1,7 @@
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    if !std::env::var("SHANNON_PROTO_REBUILD").is_ok() {
-        return Ok(());
-    }
+    // if !std::env::var("SHANNON_PROTO_REBUILD").is_ok() {
+    //     return Ok(());
+    // }
 
     let mut config = prost_build::Config::new();
     config.out_dir("src");

@@ -138,6 +138,11 @@ pub struct QueryGetServiceRequest {
     /// TODO_IMPROVE: We could support getting services by name.
     #[prost(string, tag = "1")]
     pub id: ::prost::alloc::string::String,
+    /// if false (default), include full service data including metadata.
+    /// if true, exclude metadata to reduce payload size.
+    /// For backwards compatibility and typical use cases, the default is false.
+    #[prost(bool, tag = "2")]
+    pub dehydrated: bool,
 }
 impl ::prost::Name for QueryGetServiceRequest {
     const NAME: &'static str = "QueryGetServiceRequest";
@@ -170,6 +175,11 @@ pub struct QueryAllServicesRequest {
     pub pagination: ::core::option::Option<
         super::super::cosmos::base::query::v1beta1::PageRequest,
     >,
+    /// if false, include full service data including metadata.
+    /// if true (default behavior), exclude metadata to reduce payload size.
+    /// For backwards compatibility and performance, the default is true.
+    #[prost(bool, tag = "2")]
+    pub dehydrated: bool,
 }
 impl ::prost::Name for QueryAllServicesRequest {
     const NAME: &'static str = "QueryAllServicesRequest";
@@ -744,7 +754,7 @@ pub struct MsgAddService {
     /// The Bech32 address of the service owner.
     #[prost(string, tag = "1")]
     pub owner_address: ::prost::alloc::string::String,
-    /// The Service being added to the network
+    /// The Service being added to the network, including optional experimental metadata
     #[prost(message, optional, tag = "2")]
     pub service: ::core::option::Option<super::shared::Service>,
 }

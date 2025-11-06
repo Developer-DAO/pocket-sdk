@@ -265,22 +265,22 @@ pub struct QueryAllSuppliersRequest {
     pub pagination: ::core::option::Option<
         super::super::cosmos::base::query::v1beta1::PageRequest,
     >,
+    /// Optional filters that can be combined (AND logic)
+    ///
+    /// unique service identifier to filter by
+    #[prost(string, tag = "2")]
+    pub service_id: ::prost::alloc::string::String,
+    /// supplier operator address to filter by
+    #[prost(string, tag = "3")]
+    pub operator_address: ::prost::alloc::string::String,
+    /// supplier owner address to filter by
+    #[prost(string, tag = "4")]
+    pub owner_address: ::prost::alloc::string::String,
     /// if true, return a dehydrated version of the supplier.
     /// Why? This enables smaller response payloads to reduce pagination of the supplier list.
     /// Example: Removes service_config_history and rev_share details from the response. See the implementation for more details.
-    #[prost(bool, tag = "3")]
+    #[prost(bool, tag = "5")]
     pub dehydrated: bool,
-    #[prost(oneof = "query_all_suppliers_request::Filter", tags = "2")]
-    pub filter: ::core::option::Option<query_all_suppliers_request::Filter>,
-}
-/// Nested message and enum types in `QueryAllSuppliersRequest`.
-pub mod query_all_suppliers_request {
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
-    pub enum Filter {
-        /// unique service identifier to filter by
-        #[prost(string, tag = "2")]
-        ServiceId(::prost::alloc::string::String),
-    }
 }
 impl ::prost::Name for QueryAllSuppliersRequest {
     const NAME: &'static str = "QueryAllSuppliersRequest";
