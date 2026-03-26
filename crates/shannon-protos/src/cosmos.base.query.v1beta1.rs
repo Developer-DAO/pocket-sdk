@@ -2,11 +2,11 @@
 /// PageRequest is to be embedded in gRPC request messages for efficient
 /// pagination. Ex:
 ///
-///   message SomeRequest {
-///           Foo some_parameter = 1;
-///           PageRequest pagination = 2;
-///   }
-#[derive(Clone, PartialEq, ::prost::Message)]
+/// message SomeRequest {
+/// Foo some_parameter = 1;
+/// PageRequest pagination = 2;
+/// }
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct PageRequest {
     /// key is a value returned in PageResponse.next_key to begin
     /// querying the next page most efficiently. Only one of offset or key
@@ -29,29 +29,17 @@ pub struct PageRequest {
     #[prost(bool, tag = "4")]
     pub count_total: bool,
     /// reverse is set to true if results are to be returned in the descending order.
-    ///
-    /// Since: cosmos-sdk 0.43
     #[prost(bool, tag = "5")]
     pub reverse: bool,
-}
-impl ::prost::Name for PageRequest {
-    const NAME: &'static str = "PageRequest";
-    const PACKAGE: &'static str = "cosmos.base.query.v1beta1";
-    fn full_name() -> ::prost::alloc::string::String {
-        "cosmos.base.query.v1beta1.PageRequest".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/cosmos.base.query.v1beta1.PageRequest".into()
-    }
 }
 /// PageResponse is to be embedded in gRPC response messages where the
 /// corresponding request message has used PageRequest.
 ///
-///   message SomeResponse {
-///           repeated Bar results = 1;
-///           PageResponse page = 2;
-///   }
-#[derive(Clone, PartialEq, ::prost::Message)]
+/// message SomeResponse {
+/// repeated Bar results = 1;
+/// PageResponse page = 2;
+/// }
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct PageResponse {
     /// next_key is the key to be passed to PageRequest.key to
     /// query the next page most efficiently. It will be empty if
@@ -62,14 +50,4 @@ pub struct PageResponse {
     /// was set, its value is undefined otherwise
     #[prost(uint64, tag = "2")]
     pub total: u64,
-}
-impl ::prost::Name for PageResponse {
-    const NAME: &'static str = "PageResponse";
-    const PACKAGE: &'static str = "cosmos.base.query.v1beta1";
-    fn full_name() -> ::prost::alloc::string::String {
-        "cosmos.base.query.v1beta1.PageResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/cosmos.base.query.v1beta1.PageResponse".into()
-    }
 }

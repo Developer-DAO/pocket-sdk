@@ -2,23 +2,13 @@
 /// EventSupplierStaked is emitted when a supplier stake message is committed onchain.
 ///
 /// Next index: 4
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventSupplierStaked {
     /// The session end height of the last session in which the supplier was staked.
     #[prost(int64, tag = "2")]
     pub session_end_height: i64,
     #[prost(string, tag = "3")]
     pub operator_address: ::prost::alloc::string::String,
-}
-impl ::prost::Name for EventSupplierStaked {
-    const NAME: &'static str = "EventSupplierStaked";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.EventSupplierStaked".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.EventSupplierStaked".into()
-    }
 }
 /// EventSupplierUnbondingBegin is emitted when an application unstake message
 /// is committed onchain, indicating that the supplier will now begin unbonding.
@@ -34,16 +24,6 @@ pub struct EventSupplierUnbondingBegin {
     /// The height at which supplier unbonding will end.
     #[prost(int64, tag = "4")]
     pub unbonding_end_height: i64,
-}
-impl ::prost::Name for EventSupplierUnbondingBegin {
-    const NAME: &'static str = "EventSupplierUnbondingBegin";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.EventSupplierUnbondingBegin".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.EventSupplierUnbondingBegin".into()
-    }
 }
 /// EventSupplierUnbondingEnd is emitted when an supplier has completed
 /// unbonding. The unbonding period is determined by the shared param,
@@ -61,16 +41,6 @@ pub struct EventSupplierUnbondingEnd {
     #[prost(int64, tag = "4")]
     pub unbonding_end_height: i64,
 }
-impl ::prost::Name for EventSupplierUnbondingEnd {
-    const NAME: &'static str = "EventSupplierUnbondingEnd";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.EventSupplierUnbondingEnd".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.EventSupplierUnbondingEnd".into()
-    }
-}
 /// EventSupplierUnbondingCanceled is emitted when an supplier which was unbonding
 /// successfully (re-)stakes before the unbonding period has elapsed. An EventSupplierStaked
 /// event will also be emitted immediately after this event.
@@ -85,21 +55,11 @@ pub struct EventSupplierUnbondingCanceled {
     #[prost(int64, tag = "2")]
     pub session_end_height: i64,
 }
-impl ::prost::Name for EventSupplierUnbondingCanceled {
-    const NAME: &'static str = "EventSupplierUnbondingCanceled";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.EventSupplierUnbondingCanceled".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.EventSupplierUnbondingCanceled".into()
-    }
-}
 /// EventSupplierServiceConfigActivated is emitted when a supplier service configuration
 /// becomes effective at a specific block height.
 ///
 /// Next index: 5
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventSupplierServiceConfigActivated {
     /// activation_height indicates the block height at which the new service
     /// configurations became active.
@@ -110,16 +70,6 @@ pub struct EventSupplierServiceConfigActivated {
     /// The Service ID for which the supplier is configured
     #[prost(string, tag = "4")]
     pub service_id: ::prost::alloc::string::String,
-}
-impl ::prost::Name for EventSupplierServiceConfigActivated {
-    const NAME: &'static str = "EventSupplierServiceConfigActivated";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.EventSupplierServiceConfigActivated".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.EventSupplierServiceConfigActivated".into()
-    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -154,7 +104,7 @@ impl SupplierUnbondingReason {
     }
 }
 /// Params defines the parameters for the module.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct Params {
     /// min_stake is the minimum amount of uPOKT that a supplier must stake to be
     /// included in network sessions and remain staked.
@@ -163,16 +113,6 @@ pub struct Params {
     /// staking_fee is the fee charged by the protocol for staking a supplier.
     #[prost(message, optional, tag = "2")]
     pub staking_fee: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
-}
-impl ::prost::Name for Params {
-    const NAME: &'static str = "Params";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.Params".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.Params".into()
-    }
 }
 /// GenesisState defines the supplier module's genesis state.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -183,47 +123,17 @@ pub struct GenesisState {
     #[prost(message, repeated, tag = "2")]
     pub supplier_list: ::prost::alloc::vec::Vec<super::shared::Supplier>,
 }
-impl ::prost::Name for GenesisState {
-    const NAME: &'static str = "GenesisState";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.GenesisState".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.GenesisState".into()
-    }
-}
 /// QueryParamsRequest is request type for the Query/Params RPC method.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct QueryParamsRequest {}
-impl ::prost::Name for QueryParamsRequest {
-    const NAME: &'static str = "QueryParamsRequest";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.QueryParamsRequest".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.QueryParamsRequest".into()
-    }
-}
 /// QueryParamsResponse is response type for the Query/Params RPC method.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct QueryParamsResponse {
     /// params holds all the parameters of this module.
     #[prost(message, optional, tag = "1")]
     pub params: ::core::option::Option<Params>,
 }
-impl ::prost::Name for QueryParamsResponse {
-    const NAME: &'static str = "QueryParamsResponse";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.QueryParamsResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.QueryParamsResponse".into()
-    }
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct QueryGetSupplierRequest {
     /// TODO_TECHDEBT: Add the ability to query for a supplier by owner_id
     #[prost(string, tag = "1")]
@@ -234,32 +144,12 @@ pub struct QueryGetSupplierRequest {
     #[prost(bool, tag = "2")]
     pub dehydrated: bool,
 }
-impl ::prost::Name for QueryGetSupplierRequest {
-    const NAME: &'static str = "QueryGetSupplierRequest";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.QueryGetSupplierRequest".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.QueryGetSupplierRequest".into()
-    }
-}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryGetSupplierResponse {
     #[prost(message, optional, tag = "1")]
     pub supplier: ::core::option::Option<super::shared::Supplier>,
 }
-impl ::prost::Name for QueryGetSupplierResponse {
-    const NAME: &'static str = "QueryGetSupplierResponse";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.QueryGetSupplierResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.QueryGetSupplierResponse".into()
-    }
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct QueryAllSuppliersRequest {
     #[prost(message, optional, tag = "1")]
     pub pagination: ::core::option::Option<
@@ -282,16 +172,6 @@ pub struct QueryAllSuppliersRequest {
     #[prost(bool, tag = "5")]
     pub dehydrated: bool,
 }
-impl ::prost::Name for QueryAllSuppliersRequest {
-    const NAME: &'static str = "QueryAllSuppliersRequest";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.QueryAllSuppliersRequest".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.QueryAllSuppliersRequest".into()
-    }
-}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryAllSuppliersResponse {
     #[prost(message, repeated, tag = "1")]
@@ -300,16 +180,6 @@ pub struct QueryAllSuppliersResponse {
     pub pagination: ::core::option::Option<
         super::super::cosmos::base::query::v1beta1::PageResponse,
     >,
-}
-impl ::prost::Name for QueryAllSuppliersResponse {
-    const NAME: &'static str = "QueryAllSuppliersResponse";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.QueryAllSuppliersResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.QueryAllSuppliersResponse".into()
-    }
 }
 /// Generated client implementations.
 pub mod query_client {
@@ -340,7 +210,7 @@ pub mod query_client {
     }
     impl<T> QueryClient<T>
     where
-        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T: tonic::client::GrpcService<tonic::body::Body>,
         T::Error: Into<StdError>,
         T::ResponseBody: Body<Data = Bytes> + std::marker::Send + 'static,
         <T::ResponseBody as Body>::Error: Into<StdError> + std::marker::Send,
@@ -361,13 +231,13 @@ pub mod query_client {
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
             T: tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
                 Response = http::Response<
-                    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
+                    <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
             <T as tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
             >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
         {
             QueryClient::new(InterceptedService::new(inner, interceptor))
@@ -419,7 +289,7 @@ pub mod query_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.supplier.Query/Params",
             );
@@ -444,7 +314,7 @@ pub mod query_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.supplier.Query/Supplier",
             );
@@ -468,7 +338,7 @@ pub mod query_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.supplier.Query/AllSuppliers",
             );
@@ -480,7 +350,7 @@ pub mod query_client {
     }
 }
 /// MsgUpdateParams is the Msg/UpdateParams request type.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParams {
     /// authority is the address that controls the module (defaults to x/gov unless overwritten).
     #[prost(string, tag = "1")]
@@ -490,30 +360,10 @@ pub struct MsgUpdateParams {
     #[prost(message, optional, tag = "2")]
     pub params: ::core::option::Option<Params>,
 }
-impl ::prost::Name for MsgUpdateParams {
-    const NAME: &'static str = "MsgUpdateParams";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.MsgUpdateParams".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.MsgUpdateParams".into()
-    }
-}
 /// MsgUpdateParamsResponse defines the response structure for executing a
 /// MsgUpdateParams message.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParamsResponse {}
-impl ::prost::Name for MsgUpdateParamsResponse {
-    const NAME: &'static str = "MsgUpdateParamsResponse";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.MsgUpdateParamsResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.MsgUpdateParamsResponse".into()
-    }
-}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgStakeSupplier {
     /// The Bech32 address of the message signer (i.e. owner or operator)
@@ -532,29 +382,9 @@ pub struct MsgStakeSupplier {
     #[prost(message, repeated, tag = "5")]
     pub services: ::prost::alloc::vec::Vec<super::shared::SupplierServiceConfig>,
 }
-impl ::prost::Name for MsgStakeSupplier {
-    const NAME: &'static str = "MsgStakeSupplier";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.MsgStakeSupplier".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.MsgStakeSupplier".into()
-    }
-}
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgStakeSupplierResponse {}
-impl ::prost::Name for MsgStakeSupplierResponse {
-    const NAME: &'static str = "MsgStakeSupplierResponse";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.MsgStakeSupplierResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.MsgStakeSupplierResponse".into()
-    }
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUnstakeSupplier {
     /// The Bech32 address of the message signer (i.e. owner or operator)
     #[prost(string, tag = "1")]
@@ -563,30 +393,10 @@ pub struct MsgUnstakeSupplier {
     #[prost(string, tag = "2")]
     pub operator_address: ::prost::alloc::string::String,
 }
-impl ::prost::Name for MsgUnstakeSupplier {
-    const NAME: &'static str = "MsgUnstakeSupplier";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.MsgUnstakeSupplier".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.MsgUnstakeSupplier".into()
-    }
-}
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUnstakeSupplierResponse {}
-impl ::prost::Name for MsgUnstakeSupplierResponse {
-    const NAME: &'static str = "MsgUnstakeSupplierResponse";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.MsgUnstakeSupplierResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.MsgUnstakeSupplierResponse".into()
-    }
-}
 /// MsgUpdateParam is the Msg/UpdateParam request type to update a single param.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParam {
     /// authority is the address that controls the module (defaults to x/gov unless overwritten).
     #[prost(string, tag = "1")]
@@ -598,34 +408,14 @@ pub struct MsgUpdateParam {
 }
 /// Nested message and enum types in `MsgUpdateParam`.
 pub mod msg_update_param {
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    #[derive(Clone, PartialEq, Eq, Hash, ::prost::Oneof)]
     pub enum AsType {
         #[prost(message, tag = "3")]
         AsCoin(super::super::super::cosmos::base::v1beta1::Coin),
     }
 }
-impl ::prost::Name for MsgUpdateParam {
-    const NAME: &'static str = "MsgUpdateParam";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.MsgUpdateParam".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.MsgUpdateParam".into()
-    }
-}
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParamResponse {}
-impl ::prost::Name for MsgUpdateParamResponse {
-    const NAME: &'static str = "MsgUpdateParamResponse";
-    const PACKAGE: &'static str = "pocket.supplier";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.supplier.MsgUpdateParamResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.supplier.MsgUpdateParamResponse".into()
-    }
-}
 /// Generated client implementations.
 pub mod msg_client {
     #![allow(
@@ -655,7 +445,7 @@ pub mod msg_client {
     }
     impl<T> MsgClient<T>
     where
-        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T: tonic::client::GrpcService<tonic::body::Body>,
         T::Error: Into<StdError>,
         T::ResponseBody: Body<Data = Bytes> + std::marker::Send + 'static,
         <T::ResponseBody as Body>::Error: Into<StdError> + std::marker::Send,
@@ -676,13 +466,13 @@ pub mod msg_client {
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
             T: tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
                 Response = http::Response<
-                    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
+                    <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
             <T as tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
             >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
         {
             MsgClient::new(InterceptedService::new(inner, interceptor))
@@ -735,7 +525,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.supplier.Msg/UpdateParams",
             );
@@ -759,7 +549,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.supplier.Msg/StakeSupplier",
             );
@@ -783,7 +573,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.supplier.Msg/UnstakeSupplier",
             );
@@ -807,7 +597,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.supplier.Msg/UpdateParam",
             );

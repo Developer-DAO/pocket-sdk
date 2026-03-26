@@ -13,18 +13,8 @@ pub struct ClaimSettlementResult {
     #[prost(message, repeated, tag = "5")]
     pub mod_to_acct_transfers: ::prost::alloc::vec::Vec<ModToAcctTransfer>,
 }
-impl ::prost::Name for ClaimSettlementResult {
-    const NAME: &'static str = "ClaimSettlementResult";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.ClaimSettlementResult".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.ClaimSettlementResult".into()
-    }
-}
 /// MintBurnOp holds the parameters of a single mint or burn operation.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MintBurnOp {
     #[prost(enumeration = "SettlementOpReason", tag = "1")]
     pub op_reason: i32,
@@ -33,18 +23,8 @@ pub struct MintBurnOp {
     #[prost(message, optional, tag = "3")]
     pub coin: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
 }
-impl ::prost::Name for MintBurnOp {
-    const NAME: &'static str = "MintBurnOp";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.MintBurnOp".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.MintBurnOp".into()
-    }
-}
 /// ModToAcctTransfer holds the parameters of a single module to account transfer operation.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct ModToAcctTransfer {
     #[prost(enumeration = "SettlementOpReason", tag = "1")]
     pub op_reason: i32,
@@ -56,18 +36,8 @@ pub struct ModToAcctTransfer {
     #[prost(message, optional, tag = "4")]
     pub coin: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
 }
-impl ::prost::Name for ModToAcctTransfer {
-    const NAME: &'static str = "ModToAcctTransfer";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.ModToAcctTransfer".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.ModToAcctTransfer".into()
-    }
-}
 /// ModToModTransfer holds the parameters of a single module to module transfer operation.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct ModToModTransfer {
     #[prost(enumeration = "SettlementOpReason", tag = "1")]
     pub op_reason: i32,
@@ -78,16 +48,6 @@ pub struct ModToModTransfer {
     pub recipient_module: ::prost::alloc::string::String,
     #[prost(message, optional, tag = "4")]
     pub coin: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
-}
-impl ::prost::Name for ModToModTransfer {
-    const NAME: &'static str = "ModToModTransfer";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.ModToModTransfer".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.ModToModTransfer".into()
-    }
 }
 /// SettlementOpReason is a distinct, tlm-specific causal reason for a given operation.
 ///
@@ -272,7 +232,7 @@ impl SettlementOpReason {
 /// The claim cannot be settled, leading to that work never being rewarded.
 ///
 /// Next index: 13
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventClaimExpired {
     /// The reason why the claim expired, leading to a Supplier being penalized (i.e. burn).
     #[prost(enumeration = "ClaimExpirationReason", tag = "2")]
@@ -307,24 +267,14 @@ pub struct EventClaimExpired {
     /// data is not always protobuf-encoded in the various places and formats that it
     /// appears in onchain leveldb databases.
     /// Enum values:
-    ///    PENDING_VALIDATION = 0;
-    ///    VALIDATED = 1;
-    ///    INVALID = 2;
+    /// PENDING_VALIDATION = 0;
+    /// VALIDATED = 1;
+    /// INVALID = 2;
     #[prost(int32, tag = "11")]
     pub claim_proof_status_int: i32,
     /// The operator address of the supplier whose claim expired.
     #[prost(string, tag = "12")]
     pub supplier_operator_address: ::prost::alloc::string::String,
-}
-impl ::prost::Name for EventClaimExpired {
-    const NAME: &'static str = "EventClaimExpired";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.EventClaimExpired".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.EventClaimExpired".into()
-    }
 }
 /// EventClaimSettled is emitted during settlement whenever a claim is successfully settled.
 /// It may or may not require a proof depending on various on-chain parameters and other factors.
@@ -338,9 +288,9 @@ pub struct EventClaimSettled {
     /// data is not always protobuf-encoded in the various places and formats that it
     /// appears in onchain leveldb databases.
     /// Enum values:
-    ///    NOT_REQUIRED = 0;
-    ///    PROBABILISTIC = 1;
-    ///    THRESHOLD = 2;
+    /// NOT_REQUIRED = 0;
+    /// PROBABILISTIC = 1;
+    /// THRESHOLD = 2;
     #[prost(int32, tag = "2")]
     pub proof_requirement_int: i32,
     /// Number of relays claimed to be in the session tree.
@@ -373,9 +323,9 @@ pub struct EventClaimSettled {
     /// data is not always protobuf-encoded in the various places and formats that it
     /// appears in onchain leveldb databases.
     /// Enum values:
-    ///    PENDING_VALIDATION = 0;
-    ///    VALIDATED = 1;
-    ///    INVALID = 2;
+    /// PENDING_VALIDATION = 0;
+    /// VALIDATED = 1;
+    /// INVALID = 2;
     #[prost(int32, tag = "12")]
     pub claim_proof_status_int: i32,
     /// The operator address of the supplier who submitted the claim.
@@ -388,22 +338,13 @@ pub struct EventClaimSettled {
         ::prost::alloc::string::String,
     >,
 }
-impl ::prost::Name for EventClaimSettled {
-    const NAME: &'static str = "EventClaimSettled";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.EventClaimSettled".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.EventClaimSettled".into()
-    }
-}
 /// EventApplicationOverserviced is emitted when an Application's stake cannot cover the Supplier's claim.
-/// This means the following will ALWAYS be strictly true:  effective_burn < expected_burn
-/// - Number of tokens burnt from app stake < Number of tokens burnt from supplier stake
+/// This means the following will ALWAYS be strictly true:  effective_burn \< expected_burn
+///
+/// * Number of tokens burnt from app stake \< Number of tokens burnt from supplier stake
 ///
 /// Next index: 7
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventApplicationOverserviced {
     /// The application address consuming onchain services
     #[prost(string, tag = "1")]
@@ -420,21 +361,11 @@ pub struct EventApplicationOverserviced {
     #[prost(string, tag = "6")]
     pub effective_burn: ::prost::alloc::string::String,
 }
-impl ::prost::Name for EventApplicationOverserviced {
-    const NAME: &'static str = "EventApplicationOverserviced";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.EventApplicationOverserviced".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.EventApplicationOverserviced".into()
-    }
-}
 /// EventSupplierSlashed is emitted when a supplier is slashed.
 /// This can happen for in cases such as missing or invalid proofs for submitted claims.
 ///
 /// Next index: 9
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventSupplierSlashed {
     /// Amount slashed from the supplier's stake.
     /// A function of the claim size, supplier stake, and various onchain parameters.
@@ -455,30 +386,20 @@ pub struct EventSupplierSlashed {
     /// data is not always protobuf-encoded in the various places and formats that it
     /// appears in onchain leveldb databases.
     /// Enum values:
-    ///    PENDING_VALIDATION = 0;
-    ///    VALIDATED = 1;
-    ///    INVALID = 2;
+    /// PENDING_VALIDATION = 0;
+    /// VALIDATED = 1;
+    /// INVALID = 2;
     #[prost(int32, tag = "7")]
     pub claim_proof_status_int: i32,
     /// The operator address of the supplier that was slashed.
     #[prost(string, tag = "8")]
     pub supplier_operator_address: ::prost::alloc::string::String,
 }
-impl ::prost::Name for EventSupplierSlashed {
-    const NAME: &'static str = "EventSupplierSlashed";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.EventSupplierSlashed".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.EventSupplierSlashed".into()
-    }
-}
 /// EventClaimDiscarded is emitted when a claim is discarded due to unexpected situations.
 /// It is used to prevent chain halts in favor of some missing claims.
 ///
 /// Next index: 8
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventClaimDiscarded {
     /// The error that caused the claim to be discarded.
     #[prost(string, tag = "2")]
@@ -498,31 +419,21 @@ pub struct EventClaimDiscarded {
     /// data is not always protobuf-encoded in the various places and formats that it
     /// appears in onchain leveldb databases.
     /// Enum values:
-    ///    PENDING_VALIDATION = 0;
-    ///    VALIDATED = 1;
-    ///    INVALID = 2;
+    /// PENDING_VALIDATION = 0;
+    /// VALIDATED = 1;
+    /// INVALID = 2;
     #[prost(int32, tag = "6")]
     pub claim_proof_status_int: i32,
     /// The operator address of the supplier whose claim was discarded.
     #[prost(string, tag = "7")]
     pub supplier_operator_address: ::prost::alloc::string::String,
 }
-impl ::prost::Name for EventClaimDiscarded {
-    const NAME: &'static str = "EventClaimDiscarded";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.EventClaimDiscarded".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.EventClaimDiscarded".into()
-    }
-}
 /// EventApplicationReimbursementRequest is emitted when an application requests a reimbursement from the DAO.
 /// It is intended to prevent self dealing attacks when global inflation is enabled.
 /// TODO_DISTANT_FUTURE: Remove this once global inflation is disabled in perpetuity.
 ///
 /// Next index: 8
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventApplicationReimbursementRequest {
     /// The application address consuming onchain services requesting reimbursement.
     #[prost(string, tag = "1")]
@@ -543,17 +454,7 @@ pub struct EventApplicationReimbursementRequest {
     #[prost(string, tag = "7")]
     pub amount: ::prost::alloc::string::String,
 }
-impl ::prost::Name for EventApplicationReimbursementRequest {
-    const NAME: &'static str = "EventApplicationReimbursementRequest";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.EventApplicationReimbursementRequest".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.EventApplicationReimbursementRequest".into()
-    }
-}
-/// TODO_CONSIDERATION: Consider prefixing these enums with CLAIM_EXPIRATION_REASON_
+/// TODO_CONSIDERATION: Consider prefixing these enums with CLAIM_EXPIRATION_REASON\_
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum ClaimExpirationReason {
@@ -609,16 +510,12 @@ pub struct Params {
     pub mint_equals_burn_claim_distribution: ::core::option::Option<
         MintEqualsBurnClaimDistribution,
     >,
-}
-impl ::prost::Name for Params {
-    const NAME: &'static str = "Params";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.Params".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.Params".into()
-    }
+    /// mint_ratio is the proportion of burned tokens to mint (0.0 \< mint_ratio \<= 1.0).
+    /// PIP-41: A value of 0.975 means 97.5% of burned tokens are minted, 2.5% permanently removed.
+    /// MintEqualsBurnTLM: Only used by the MintEqualsBurnTLM at the end of claim settlement.
+    /// Default: 1.0 (no deflation - mint equals burn for backward compatibility)
+    #[prost(double, tag = "9")]
+    pub mint_ratio: f64,
 }
 /// MintAllocationPercentages captures the distribution of newly minted tokens.
 /// The sum of all new tokens minted must equal 1.
@@ -641,16 +538,6 @@ pub struct MintAllocationPercentages {
     /// application - % of newley minted tokens sent to the application account address.
     #[prost(double, tag = "5")]
     pub application: f64,
-}
-impl ::prost::Name for MintAllocationPercentages {
-    const NAME: &'static str = "MintAllocationPercentages";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.MintAllocationPercentages".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.MintAllocationPercentages".into()
-    }
 }
 /// MintEqualsBurnClaimDistribution captures the distribution of claimable tokens.
 /// The sum of all tokens being burnt from the application's stake must equal 1.
@@ -676,16 +563,6 @@ pub struct MintEqualsBurnClaimDistribution {
     #[prost(double, tag = "5")]
     pub application: f64,
 }
-impl ::prost::Name for MintEqualsBurnClaimDistribution {
-    const NAME: &'static str = "MintEqualsBurnClaimDistribution";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.MintEqualsBurnClaimDistribution".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.MintEqualsBurnClaimDistribution".into()
-    }
-}
 /// GenesisState defines the tokenomics module's genesis state.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GenesisState {
@@ -693,45 +570,15 @@ pub struct GenesisState {
     #[prost(message, optional, tag = "1")]
     pub params: ::core::option::Option<Params>,
 }
-impl ::prost::Name for GenesisState {
-    const NAME: &'static str = "GenesisState";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.GenesisState".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.GenesisState".into()
-    }
-}
 /// QueryParamsRequest is request type for the Query/Params RPC method.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct QueryParamsRequest {}
-impl ::prost::Name for QueryParamsRequest {
-    const NAME: &'static str = "QueryParamsRequest";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.QueryParamsRequest".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.QueryParamsRequest".into()
-    }
-}
 /// QueryParamsResponse is response type for the Query/Params RPC method.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryParamsResponse {
     /// params holds all the parameters of this module.
     #[prost(message, optional, tag = "1")]
     pub params: ::core::option::Option<Params>,
-}
-impl ::prost::Name for QueryParamsResponse {
-    const NAME: &'static str = "QueryParamsResponse";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.QueryParamsResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.QueryParamsResponse".into()
-    }
 }
 /// Generated client implementations.
 pub mod query_client {
@@ -762,7 +609,7 @@ pub mod query_client {
     }
     impl<T> QueryClient<T>
     where
-        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T: tonic::client::GrpcService<tonic::body::Body>,
         T::Error: Into<StdError>,
         T::ResponseBody: Body<Data = Bytes> + std::marker::Send + 'static,
         <T::ResponseBody as Body>::Error: Into<StdError> + std::marker::Send,
@@ -783,13 +630,13 @@ pub mod query_client {
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
             T: tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
                 Response = http::Response<
-                    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
+                    <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
             <T as tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
             >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
         {
             QueryClient::new(InterceptedService::new(inner, interceptor))
@@ -841,7 +688,7 @@ pub mod query_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.tokenomics.Query/Params",
             );
@@ -862,29 +709,9 @@ pub struct MsgUpdateParams {
     #[prost(message, optional, tag = "2")]
     pub params: ::core::option::Option<Params>,
 }
-impl ::prost::Name for MsgUpdateParams {
-    const NAME: &'static str = "MsgUpdateParams";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.MsgUpdateParams".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.MsgUpdateParams".into()
-    }
-}
 /// MsgUpdateParamsResponse defines the response structure for executing a MsgUpdateParams message.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParamsResponse {}
-impl ::prost::Name for MsgUpdateParamsResponse {
-    const NAME: &'static str = "MsgUpdateParamsResponse";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.MsgUpdateParamsResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.MsgUpdateParamsResponse".into()
-    }
-}
 /// MsgUpdateParam is the Msg/UpdateParam request type to update a single param.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgUpdateParam {
@@ -911,29 +738,9 @@ pub mod msg_update_param {
         AsMintEqualsBurnClaimDistribution(super::MintEqualsBurnClaimDistribution),
     }
 }
-impl ::prost::Name for MsgUpdateParam {
-    const NAME: &'static str = "MsgUpdateParam";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.MsgUpdateParam".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.MsgUpdateParam".into()
-    }
-}
 /// MsgUpdateParamResponse defines the response structure for executing a MsgUpdateParam message after a single param update.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParamResponse {}
-impl ::prost::Name for MsgUpdateParamResponse {
-    const NAME: &'static str = "MsgUpdateParamResponse";
-    const PACKAGE: &'static str = "pocket.tokenomics";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.tokenomics.MsgUpdateParamResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.tokenomics.MsgUpdateParamResponse".into()
-    }
-}
 /// Generated client implementations.
 pub mod msg_client {
     #![allow(
@@ -963,7 +770,7 @@ pub mod msg_client {
     }
     impl<T> MsgClient<T>
     where
-        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T: tonic::client::GrpcService<tonic::body::Body>,
         T::Error: Into<StdError>,
         T::ResponseBody: Body<Data = Bytes> + std::marker::Send + 'static,
         <T::ResponseBody as Body>::Error: Into<StdError> + std::marker::Send,
@@ -984,13 +791,13 @@ pub mod msg_client {
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
             T: tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
                 Response = http::Response<
-                    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
+                    <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
             <T as tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
             >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
         {
             MsgClient::new(InterceptedService::new(inner, interceptor))
@@ -1043,7 +850,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.tokenomics.Msg/UpdateParams",
             );
@@ -1067,7 +874,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.tokenomics.Msg/UpdateParam",
             );

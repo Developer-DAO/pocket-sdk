@@ -23,18 +23,8 @@ pub struct ModuleDescriptor {
     #[prost(message, repeated, tag = "3")]
     pub can_migrate_from: ::prost::alloc::vec::Vec<MigrateFromInfo>,
 }
-impl ::prost::Name for ModuleDescriptor {
-    const NAME: &'static str = "ModuleDescriptor";
-    const PACKAGE: &'static str = "cosmos.app.v1alpha1";
-    fn full_name() -> ::prost::alloc::string::String {
-        "cosmos.app.v1alpha1.ModuleDescriptor".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/cosmos.app.v1alpha1.ModuleDescriptor".into()
-    }
-}
 /// PackageReference is a reference to a protobuf package used by a module.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct PackageReference {
     /// name is the fully-qualified name of the package.
     #[prost(string, tag = "1")]
@@ -59,7 +49,7 @@ pub struct PackageReference {
     /// image and panic if there are runtime protobuf definitions that are not
     /// in the pinned descriptor which do not have
     /// a "Since Revision N" comment or have a "Since Revision N" comment where
-    /// N is <= to the revision specified here. This indicates that the protobuf
+    /// N is \<= to the revision specified here. This indicates that the protobuf
     /// files have been updated, but the pinned file descriptor hasn't.
     ///
     /// If there are items in the pinned file descriptor with a revision
@@ -70,39 +60,20 @@ pub struct PackageReference {
     /// with pinned file descriptors to make sure there are no incompatible changes.
     ///
     /// This behavior ensures that:
+    ///
     /// * pinned proto images are up-to-date
     /// * protobuf files are carefully annotated with revision comments which
-    ///    are important good client UX
+    ///   are important good client UX
     /// * protobuf files are changed in backwards and forwards compatible ways
     #[prost(uint32, tag = "2")]
     pub revision: u32,
 }
-impl ::prost::Name for PackageReference {
-    const NAME: &'static str = "PackageReference";
-    const PACKAGE: &'static str = "cosmos.app.v1alpha1";
-    fn full_name() -> ::prost::alloc::string::String {
-        "cosmos.app.v1alpha1.PackageReference".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/cosmos.app.v1alpha1.PackageReference".into()
-    }
-}
 /// MigrateFromInfo is information on a module version that a newer module
 /// can migrate from.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MigrateFromInfo {
     /// module is the fully-qualified protobuf name of the module config object
     /// for the previous module version, ex: "cosmos.group.module.v1.Module".
     #[prost(string, tag = "1")]
     pub module: ::prost::alloc::string::String,
-}
-impl ::prost::Name for MigrateFromInfo {
-    const NAME: &'static str = "MigrateFromInfo";
-    const PACKAGE: &'static str = "cosmos.app.v1alpha1";
-    fn full_name() -> ::prost::alloc::string::String {
-        "cosmos.app.v1alpha1.MigrateFromInfo".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/cosmos.app.v1alpha1.MigrateFromInfo".into()
-    }
 }

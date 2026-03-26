@@ -1,2 +1,3 @@
-pub use cosmos_sdk_proto;
+pub use cosmos_sdk_proto::cosmos::*;
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/src/_includes.rs"));
+

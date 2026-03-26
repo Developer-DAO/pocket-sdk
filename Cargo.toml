@@ -1,3 +1,13 @@
 [workspace]
 resolver = "3"
-members = [ "crates/example","crates/shannon-protos"]
+
+members = [ "crates/example","crates/shannon-protos" ]
+
+[workspace.dependencies]
+cosmos-sdk-proto = { version = "0.27", default-features = false, features = ["grpc"] }
+prost = { version = "0.14.3", default-features = false }
+prost-types = "0.14.3"
+tonic = { version = "0.14.5", default-features = false, features = ["codegen"] }
+tokio = {version = "1.45.0", features = ["macros", "rt-multi-thread"]}
+tonic-prost-build = "0.14.5"
+tonic-prost = "0.14.5"

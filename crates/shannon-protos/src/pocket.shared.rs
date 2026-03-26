@@ -2,7 +2,7 @@
 /// Service message to encapsulate unique and semantic identifiers for a service on the network
 ///
 /// Next free index: 6
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct Service {
     /// For example, what if we want to request a session for a certain service but with some additional configs that identify it?
     ///
@@ -30,36 +30,16 @@ pub struct Service {
     #[prost(string, tag = "4")]
     pub owner_address: ::prost::alloc::string::String,
     /// Optional metadata containing an experimental API specification for the service.
-    /// When exposed via JSON, this field is base64 encoded and MUST be <= 256 KiB when decoded.
+    /// When exposed via JSON, this field is base64 encoded and MUST be \<= 256 KiB when decoded.
     #[prost(message, optional, tag = "5")]
     pub metadata: ::core::option::Option<Metadata>,
 }
-impl ::prost::Name for Service {
-    const NAME: &'static str = "Service";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.Service".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.Service".into()
-    }
-}
 /// ApplicationServiceConfig holds the service configuration the application stakes for
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct ApplicationServiceConfig {
     /// The Service ID for which the application is configured
     #[prost(string, tag = "1")]
     pub service_id: ::prost::alloc::string::String,
-}
-impl ::prost::Name for ApplicationServiceConfig {
-    const NAME: &'static str = "ApplicationServiceConfig";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.ApplicationServiceConfig".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.ApplicationServiceConfig".into()
-    }
 }
 /// SupplierServiceConfig holds the service configuration the supplier stakes for
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -74,16 +54,6 @@ pub struct SupplierServiceConfig {
     #[prost(message, repeated, tag = "3")]
     pub rev_share: ::prost::alloc::vec::Vec<ServiceRevenueShare>,
 }
-impl ::prost::Name for SupplierServiceConfig {
-    const NAME: &'static str = "SupplierServiceConfig";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.SupplierServiceConfig".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.SupplierServiceConfig".into()
-    }
-}
 /// SupplierEndpoint message to hold service configuration details
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SupplierEndpoint {
@@ -97,18 +67,8 @@ pub struct SupplierEndpoint {
     #[prost(message, repeated, tag = "3")]
     pub configs: ::prost::alloc::vec::Vec<ConfigOption>,
 }
-impl ::prost::Name for SupplierEndpoint {
-    const NAME: &'static str = "SupplierEndpoint";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.SupplierEndpoint".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.SupplierEndpoint".into()
-    }
-}
 /// ServiceRevenueShare message to hold revenue share configuration details
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct ServiceRevenueShare {
     /// The Bech32 address of the revenue share recipient
     #[prost(string, tag = "1")]
@@ -117,18 +77,8 @@ pub struct ServiceRevenueShare {
     #[prost(uint64, tag = "3")]
     pub rev_share_percentage: u64,
 }
-impl ::prost::Name for ServiceRevenueShare {
-    const NAME: &'static str = "ServiceRevenueShare";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.ServiceRevenueShare".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.ServiceRevenueShare".into()
-    }
-}
 /// Key-value wrapper for config options, as proto maps can't be keyed by enums
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct ConfigOption {
     /// Config option key
     #[prost(enumeration = "ConfigOptions", tag = "1")]
@@ -137,36 +87,16 @@ pub struct ConfigOption {
     #[prost(string, tag = "2")]
     pub value: ::prost::alloc::string::String,
 }
-impl ::prost::Name for ConfigOption {
-    const NAME: &'static str = "ConfigOption";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.ConfigOption".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.ConfigOption".into()
-    }
-}
 /// Metadata message to hold additional metadata for a service.
 /// The raw bytes are stored on-chain and will be base64 encoded in JSON representations.
 ///
 /// Next free index: 2
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct Metadata {
     /// EXPERIMENTAL: Serialized API spec limited to 256 KiB when decoded.
-    /// TODO_FUTURE: support dedicated openapi_ / openrpc_ fields once formats stabilize.
+    /// TODO_FUTURE: support dedicated openapi\_ / openrpc\_ fields once formats stabilize.
     #[prost(bytes = "vec", tag = "1")]
     pub experimental_api_specs: ::prost::alloc::vec::Vec<u8>,
-}
-impl ::prost::Name for Metadata {
-    const NAME: &'static str = "Metadata";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.Metadata".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.Metadata".into()
-    }
 }
 /// Enum to define RPC types
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
@@ -269,16 +199,6 @@ pub struct Supplier {
     #[prost(message, repeated, tag = "6")]
     pub service_config_history: ::prost::alloc::vec::Vec<ServiceConfigUpdate>,
 }
-impl ::prost::Name for Supplier {
-    const NAME: &'static str = "Supplier";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.Supplier".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.Supplier".into()
-    }
-}
 /// ServiceConfigUpdate tracks a change in a supplier's service configurations
 /// at a specific block height, enabling tracking of configuration changes over time.
 /// This record helps maintain a complete history of service configs and their availability periods.
@@ -295,25 +215,16 @@ pub struct ServiceConfigUpdate {
     pub activation_height: i64,
     /// Block height at which this service configuration was deactivated (0 if still active)
     /// For service configs scheduled for deactivation:
-    /// - This field stores the block height when deactivation will occur
-    /// - After deactivation, the config remains in history only as needed for claim settlement
-    /// - Once no longer required for settlement, the config is automatically removed by
-    ///    the EndBlockerPruneSupplierServiceConfigHistory process
+    ///
+    /// * This field stores the block height when deactivation will occur
+    /// * After deactivation, the config remains in history only as needed for claim settlement
+    /// * Once no longer required for settlement, the config is automatically removed by
+    ///   the EndBlockerPruneSupplierServiceConfigHistory process
     #[prost(int64, tag = "4")]
     pub deactivation_height: i64,
 }
-impl ::prost::Name for ServiceConfigUpdate {
-    const NAME: &'static str = "ServiceConfigUpdate";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.ServiceConfigUpdate".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.ServiceConfigUpdate".into()
-    }
-}
 /// Params defines the parameters for the module.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct Params {
     /// num_blocks_per_session is the number of blocks between the session start & end heights.
     #[prost(uint64, tag = "1")]
@@ -368,17 +279,17 @@ pub struct Params {
     ///
     /// It acts as a denominator in the formula:
     ///
-    ///    compute_unit_cost_in_uPOKT = compute_units_to_tokens_multiplier / compute_unit_cost_granularity
+    /// compute_unit_cost_in_uPOKT = compute_units_to_tokens_multiplier / compute_unit_cost_granularity
     ///
     /// This enables high-precision pricing of compute units using integer math.
     /// For example:
     ///
     /// +-------------------------------+---------------------------------------------+
-    /// | compute_unit_cost_granularity | compute_units_to_tokens_multiplier unit     |
+    /// \| compute_unit_cost_granularity | compute_units_to_tokens_multiplier unit     |
     /// +-------------------------------+---------------------------------------------+
-    /// | 1                             | uPOKT                                       |
-    /// | 1_000                         | nPOKT (nanoPOKT, 1e-3 uPOKT)                |
-    /// | 1_000_000                     | pPOKT (picoPOKT, 1e-6 uPOKT)                |
+    /// \| 1                             | uPOKT                                       |
+    /// \| 1_000                         | nPOKT (nanoPOKT, 1e-3 uPOKT)                |
+    /// \| 1_000_000                     | pPOKT (picoPOKT, 1e-6 uPOKT)                |
     /// +-------------------------------+---------------------------------------------+
     ///
     /// ⚠️ Note: This value is a configurable global network parameter (not a constant).
@@ -388,62 +299,35 @@ pub struct Params {
     #[prost(uint64, tag = "11")]
     pub compute_unit_cost_granularity: u64,
 }
-impl ::prost::Name for Params {
-    const NAME: &'static str = "Params";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.Params".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.Params".into()
-    }
+/// ParamsUpdate stores a snapshot of shared parameters
+/// along with the height at which they became effective.
+/// This enables historical parameter lookups for session calculations.
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct ParamsUpdate {
+    /// effective_height is the block height at which these params became effective.
+    /// Parameters are activated at session boundaries, not immediately upon governance change.
+    #[prost(int64, tag = "1")]
+    pub effective_height: i64,
+    /// params is the snapshot of shared params that were effective starting at effective_height.
+    #[prost(message, optional, tag = "2")]
+    pub params: ::core::option::Option<Params>,
 }
 /// GenesisState defines the shared module's genesis state.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct GenesisState {
     /// params defines all the parameters of the module.
     #[prost(message, optional, tag = "1")]
     pub params: ::core::option::Option<Params>,
 }
-impl ::prost::Name for GenesisState {
-    const NAME: &'static str = "GenesisState";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.GenesisState".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.GenesisState".into()
-    }
-}
 /// QueryParamsRequest is request type for the Query/Params RPC method.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct QueryParamsRequest {}
-impl ::prost::Name for QueryParamsRequest {
-    const NAME: &'static str = "QueryParamsRequest";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.QueryParamsRequest".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.QueryParamsRequest".into()
-    }
-}
 /// QueryParamsResponse is response type for the Query/Params RPC method.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct QueryParamsResponse {
     /// params holds all the parameters of this module.
     #[prost(message, optional, tag = "1")]
     pub params: ::core::option::Option<Params>,
-}
-impl ::prost::Name for QueryParamsResponse {
-    const NAME: &'static str = "QueryParamsResponse";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.QueryParamsResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.QueryParamsResponse".into()
-    }
 }
 /// Generated client implementations.
 pub mod query_client {
@@ -474,7 +358,7 @@ pub mod query_client {
     }
     impl<T> QueryClient<T>
     where
-        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T: tonic::client::GrpcService<tonic::body::Body>,
         T::Error: Into<StdError>,
         T::ResponseBody: Body<Data = Bytes> + std::marker::Send + 'static,
         <T::ResponseBody as Body>::Error: Into<StdError> + std::marker::Send,
@@ -495,13 +379,13 @@ pub mod query_client {
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
             T: tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
                 Response = http::Response<
-                    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
+                    <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
             <T as tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
             >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
         {
             QueryClient::new(InterceptedService::new(inner, interceptor))
@@ -553,7 +437,7 @@ pub mod query_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.shared.Query/Params",
             );
@@ -565,7 +449,7 @@ pub mod query_client {
     }
 }
 /// MsgUpdateParams is the Msg/UpdateParams request type.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParams {
     /// authority is the address that controls the module (defaults to x/gov unless overwritten).
     #[prost(string, tag = "1")]
@@ -574,32 +458,12 @@ pub struct MsgUpdateParams {
     #[prost(message, optional, tag = "2")]
     pub params: ::core::option::Option<Params>,
 }
-impl ::prost::Name for MsgUpdateParams {
-    const NAME: &'static str = "MsgUpdateParams";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.MsgUpdateParams".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.MsgUpdateParams".into()
-    }
-}
 /// MsgUpdateParamsResponse defines the response structure for executing a
 /// MsgUpdateParams message.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParamsResponse {}
-impl ::prost::Name for MsgUpdateParamsResponse {
-    const NAME: &'static str = "MsgUpdateParamsResponse";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.MsgUpdateParamsResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.MsgUpdateParamsResponse".into()
-    }
-}
 /// MsgUpdateParam is the Msg/UpdateParam request type to update a single param.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParam {
     /// authority is the address that controls the module (defaults to x/gov unless overwritten).
     #[prost(string, tag = "1")]
@@ -611,7 +475,7 @@ pub struct MsgUpdateParam {
 }
 /// Nested message and enum types in `MsgUpdateParam`.
 pub mod msg_update_param {
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    #[derive(Clone, PartialEq, Eq, Hash, ::prost::Oneof)]
     pub enum AsType {
         #[prost(string, tag = "3")]
         AsString(::prost::alloc::string::String),
@@ -621,30 +485,10 @@ pub mod msg_update_param {
         AsBytes(::prost::alloc::vec::Vec<u8>),
     }
 }
-impl ::prost::Name for MsgUpdateParam {
-    const NAME: &'static str = "MsgUpdateParam";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.MsgUpdateParam".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.MsgUpdateParam".into()
-    }
-}
 /// MsgUpdateParamResponse defines the response structure for executing a
 /// MsgUpdateParam message after a single param update.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParamResponse {}
-impl ::prost::Name for MsgUpdateParamResponse {
-    const NAME: &'static str = "MsgUpdateParamResponse";
-    const PACKAGE: &'static str = "pocket.shared";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.shared.MsgUpdateParamResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.shared.MsgUpdateParamResponse".into()
-    }
-}
 /// Generated client implementations.
 pub mod msg_client {
     #![allow(
@@ -674,7 +518,7 @@ pub mod msg_client {
     }
     impl<T> MsgClient<T>
     where
-        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T: tonic::client::GrpcService<tonic::body::Body>,
         T::Error: Into<StdError>,
         T::ResponseBody: Body<Data = Bytes> + std::marker::Send + 'static,
         <T::ResponseBody as Body>::Error: Into<StdError> + std::marker::Send,
@@ -695,13 +539,13 @@ pub mod msg_client {
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
             T: tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
                 Response = http::Response<
-                    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
+                    <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
             <T as tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
             >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
         {
             MsgClient::new(InterceptedService::new(inner, interceptor))
@@ -754,7 +598,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.shared.Msg/UpdateParams",
             );
@@ -778,7 +622,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.shared.Msg/UpdateParam",
             );

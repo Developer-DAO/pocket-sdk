@@ -1,16 +1,22 @@
 use std::collections::HashMap;
 
 use shannon_protos::{
+    cosmos::base::v1beta1::Coin,
     pocket::{
+        application::{
+            QueryGetApplicationRequest,
+            query_client::QueryClient as ApplicationClient,
+        },
         supplier::{QueryAllSuppliersRequest, query_client::QueryClient as SupplierClient},
     },
 };
 
+const URL: &'static str = "https://sauron-rpc.infra.pocket.network";
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Get all suppliers on shannon and count how many there is of each type
-    let mut client =
-        SupplierClient::connect("https://shannon-grove-grpc.mainnet.poktroll.com").await?;
+    // // Get all suppliers on shannon and count how many there is of each type
+    let mut client = SupplierClient::connect(URL).await?;
     let req = QueryAllSuppliersRequest {
         pagination: None,
         dehydrated: false,
@@ -38,6 +44,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         });
 
     println!("{res:#?}");
+
+    let mut client = ApplicationClient::connect(URL).await?;
+
+    let req = QueryGetApplicationRequest {
+        address: String::new(),
+    };
+    let res = client.application(req).await.expect("");
+    let qga = res.into_inner();
+    if let Some(app) = qga.application {
+        println!(
+            "App Stake Amount: {}upokt",
+            app.stake
+                .unwrap_or(Coin {
+                    denom: String::from("upokt"),
+                    amount: String::from("0")
+                })
+                .amount
+        );
+    }
 
     Ok(())
 }

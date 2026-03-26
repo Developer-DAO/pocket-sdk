@@ -9,28 +9,31 @@ pub struct Application {
     #[prost(message, optional, tag = "2")]
     pub stake: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
     /// CRITICAL: Must contain EXACTLY ONE service config
-    /// - Enforces a single service configuration per application to prevent over-servicing.
-    /// - Field is repeated for legacy reasons and potential future compatibility.
-    /// - References for rationale:
-    ///    - <https://github.com/pokt-network/poktroll/pull/750#discussion_r1735025033>
-    ///    - <https://www.notion.so/buildwithgrove/Off-chain-Application-Stake-Tracking-6a8bebb107db4f7f9dc62cbe7ba555f7>
+    ///
+    /// * Enforces a single service configuration per application to prevent over-servicing.
+    /// * Field is repeated for legacy reasons and potential future compatibility.
+    /// * References for rationale:
+    ///   * <https://github.com/pokt-network/poktroll/pull/750#discussion_r1735025033>
+    ///   * <https://www.notion.so/buildwithgrove/Off-chain-Application-Stake-Tracking-6a8bebb107db4f7f9dc62cbe7ba555f7>
     #[prost(message, repeated, tag = "3")]
     pub service_configs: ::prost::alloc::vec::Vec<
         super::shared::ApplicationServiceConfig,
     >,
     /// TODO_MAINNET_MIGRATION(@bryanchriswhite): Rename `delegatee_gateway_addresses` to `gateway_addresses_delegated_to` for better clarity and consistency.
-    /// - Update all related configs, comments, variables, and function names throughout the codebase to reflect this change.
-    /// - This field is a non-nullable list of Bech32-encoded delegatee Gateway addresses.
+    ///
+    /// * Update all related configs, comments, variables, and function names throughout the codebase to reflect this change.
+    /// * This field is a non-nullable list of Bech32-encoded delegatee Gateway addresses.
     #[prost(string, repeated, tag = "4")]
     pub delegatee_gateway_addresses: ::prost::alloc::vec::Vec<
         ::prost::alloc::string::String,
     >,
     /// Mapping of session end heights to gateways being undelegated from
-    /// - Key: Height of the last block of the session when the undelegation transaction was committed
-    /// - Value: List of gateways being undelegated from at that session end height
-    /// TODO_DOCUMENT(@red-0ne): Document the complete flow and rationale behind this mapping.
-    /// - Ensure the documentation explains why tracking pending undelegations by session end height is necessary.
-    /// - See: <https://github.com/pokt-network/poktroll/issues/476#issuecomment-2052639906> for context and examples.
+    ///
+    /// * Key: Height of the last block of the session when the undelegation transaction was committed
+    /// * Value: List of gateways being undelegated from at that session end height
+    ///   TODO_DOCUMENT(@red-0ne): Document the complete flow and rationale behind this mapping.
+    /// * Ensure the documentation explains why tracking pending undelegations by session end height is necessary.
+    /// * See: <https://github.com/pokt-network/poktroll/issues/476#issuecomment-2052639906> for context and examples.
     #[prost(map = "uint64, message", tag = "5")]
     pub pending_undelegations: ::std::collections::HashMap<u64, UndelegatingGatewayList>,
     /// Session end height when application initiated unstaking (0 if not unstaking)
@@ -40,58 +43,28 @@ pub struct Application {
     #[prost(message, optional, tag = "7")]
     pub pending_transfer: ::core::option::Option<PendingApplicationTransfer>,
 }
-impl ::prost::Name for Application {
-    const NAME: &'static str = "Application";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.Application".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.Application".into()
-    }
-}
 /// UndelegatingGatewayList is used as the Value of `pending_undelegations`.
 /// It is required to store a repeated list of strings as a map value.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct UndelegatingGatewayList {
     #[prost(string, repeated, tag = "2")]
     pub gateway_addresses: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
-impl ::prost::Name for UndelegatingGatewayList {
-    const NAME: &'static str = "UndelegatingGatewayList";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.UndelegatingGatewayList".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.UndelegatingGatewayList".into()
-    }
-}
 /// PendingTransfer is used to store the details of a pending transfer.
 /// It is only intended to be used inside of an Application object.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct PendingApplicationTransfer {
     #[prost(string, tag = "1")]
     pub destination_address: ::prost::alloc::string::String,
     #[prost(uint64, tag = "2")]
     pub session_end_height: u64,
 }
-impl ::prost::Name for PendingApplicationTransfer {
-    const NAME: &'static str = "PendingApplicationTransfer";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.PendingApplicationTransfer".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.PendingApplicationTransfer".into()
-    }
-}
 /// Undelegation represents a connection between an application and a gateway that
 /// is in the process of being removed.
 ///
 /// This record is stored in the undelegation index
 /// and used to track and process pending undelegations after the unbonding period has elapsed.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct PendingUndelegation {
     /// Address of the application that is undelegating from the gateway.
     #[prost(string, tag = "1")]
@@ -99,16 +72,6 @@ pub struct PendingUndelegation {
     /// Address of the gateway that the application is undelegating from.
     #[prost(string, tag = "2")]
     pub gateway_address: ::prost::alloc::string::String,
-}
-impl ::prost::Name for PendingUndelegation {
-    const NAME: &'static str = "PendingUndelegation";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.PendingUndelegation".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.PendingUndelegation".into()
-    }
 }
 /// EventApplicationStaked is emitted when an application is staked or up-staked.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -118,16 +81,6 @@ pub struct EventApplicationStaked {
     /// The end height of the session in which the application was staked.
     #[prost(int64, tag = "2")]
     pub session_end_height: i64,
-}
-impl ::prost::Name for EventApplicationStaked {
-    const NAME: &'static str = "EventApplicationStaked";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.EventApplicationStaked".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.EventApplicationStaked".into()
-    }
 }
 /// EventRedelegation is an event emitted whenever an application changes its
 /// delegatee gateways on chain. This is in response to both a DelegateToGateway
@@ -140,16 +93,6 @@ pub struct EventRedelegation {
     /// The end height of the session in which the redelegation was committed.
     #[prost(int64, tag = "2")]
     pub session_end_height: i64,
-}
-impl ::prost::Name for EventRedelegation {
-    const NAME: &'static str = "EventRedelegation";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.EventRedelegation".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.EventRedelegation".into()
-    }
 }
 /// EventTransferBegin is emitted whenever an application begins a transfer. It
 /// includes the source application state immediately after the transfer began.
@@ -167,16 +110,6 @@ pub struct EventTransferBegin {
     /// The height at which the transfer will complete.
     #[prost(int64, tag = "5")]
     pub transfer_end_height: i64,
-}
-impl ::prost::Name for EventTransferBegin {
-    const NAME: &'static str = "EventTransferBegin";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.EventTransferBegin".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.EventTransferBegin".into()
-    }
 }
 /// EventTransferEnd is emitted whenever an application transfer is completed. It
 /// includes the destination application state at the time the transfer completed.
@@ -197,16 +130,6 @@ pub struct EventTransferEnd {
     #[prost(int64, tag = "5")]
     pub transfer_end_height: i64,
 }
-impl ::prost::Name for EventTransferEnd {
-    const NAME: &'static str = "EventTransferEnd";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.EventTransferEnd".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.EventTransferEnd".into()
-    }
-}
 /// EventTransferError is emitted whenever an application transfer fails. It
 /// includes the source application state at the time the transfer failed and
 /// the error message.
@@ -226,16 +149,6 @@ pub struct EventTransferError {
     #[prost(string, tag = "5")]
     pub error: ::prost::alloc::string::String,
 }
-impl ::prost::Name for EventTransferError {
-    const NAME: &'static str = "EventTransferError";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.EventTransferError".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.EventTransferError".into()
-    }
-}
 /// EventApplicationUnbondingBegin is emitted when an application begins unbonding.
 /// This can be triggered by the commitment of an unstake message or by the application's
 /// stake dropping below the minimum. This event signals that an application has begun
@@ -254,16 +167,6 @@ pub struct EventApplicationUnbondingBegin {
     #[prost(int64, tag = "4")]
     pub unbonding_end_height: i64,
 }
-impl ::prost::Name for EventApplicationUnbondingBegin {
-    const NAME: &'static str = "EventApplicationUnbondingBegin";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.EventApplicationUnbondingBegin".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.EventApplicationUnbondingBegin".into()
-    }
-}
 /// EventApplicationUnbondingEnd is emitted when an application has completed
 /// unbonding. The unbonding period is determined by the shared param,
 /// application_unbonding_period_sessions.
@@ -280,16 +183,6 @@ pub struct EventApplicationUnbondingEnd {
     #[prost(int64, tag = "4")]
     pub unbonding_end_height: i64,
 }
-impl ::prost::Name for EventApplicationUnbondingEnd {
-    const NAME: &'static str = "EventApplicationUnbondingEnd";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.EventApplicationUnbondingEnd".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.EventApplicationUnbondingEnd".into()
-    }
-}
 /// EventApplicationUnbondingCanceled is emitted when an application which was unbonding
 /// successfully (re-)stakes before the unbonding period has elapsed. An EventApplicationStaked
 /// event will also be emitted immediately after this event.
@@ -300,16 +193,6 @@ pub struct EventApplicationUnbondingCanceled {
     /// The end height of the session in which the unbonding was canceled.
     #[prost(int64, tag = "2")]
     pub session_end_height: i64,
-}
-impl ::prost::Name for EventApplicationUnbondingCanceled {
-    const NAME: &'static str = "EventApplicationUnbondingCanceled";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.EventApplicationUnbondingCanceled".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.EventApplicationUnbondingCanceled".into()
-    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -341,7 +224,7 @@ impl ApplicationUnbondingReason {
     }
 }
 /// Params defines the parameters for the module.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct Params {
     /// max_delegated_gateways defines the maximum number of gateways that a single
     /// application can delegate to. This is used to prevent performance issues
@@ -352,16 +235,6 @@ pub struct Params {
     #[prost(message, optional, tag = "2")]
     pub min_stake: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
 }
-impl ::prost::Name for Params {
-    const NAME: &'static str = "Params";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.Params".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.Params".into()
-    }
-}
 /// GenesisState defines the application module's genesis state.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GenesisState {
@@ -371,77 +244,27 @@ pub struct GenesisState {
     #[prost(message, repeated, tag = "2")]
     pub application_list: ::prost::alloc::vec::Vec<Application>,
 }
-impl ::prost::Name for GenesisState {
-    const NAME: &'static str = "GenesisState";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.GenesisState".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.GenesisState".into()
-    }
-}
 /// QueryParamsRequest is request type for the Query/Params RPC method.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct QueryParamsRequest {}
-impl ::prost::Name for QueryParamsRequest {
-    const NAME: &'static str = "QueryParamsRequest";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.QueryParamsRequest".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.QueryParamsRequest".into()
-    }
-}
 /// QueryParamsResponse is response type for the Query/Params RPC method.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct QueryParamsResponse {
     /// params holds all the parameters of this module.
     #[prost(message, optional, tag = "1")]
     pub params: ::core::option::Option<Params>,
 }
-impl ::prost::Name for QueryParamsResponse {
-    const NAME: &'static str = "QueryParamsResponse";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.QueryParamsResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.QueryParamsResponse".into()
-    }
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct QueryGetApplicationRequest {
     #[prost(string, tag = "1")]
     pub address: ::prost::alloc::string::String,
-}
-impl ::prost::Name for QueryGetApplicationRequest {
-    const NAME: &'static str = "QueryGetApplicationRequest";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.QueryGetApplicationRequest".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.QueryGetApplicationRequest".into()
-    }
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryGetApplicationResponse {
     #[prost(message, optional, tag = "1")]
     pub application: ::core::option::Option<Application>,
 }
-impl ::prost::Name for QueryGetApplicationResponse {
-    const NAME: &'static str = "QueryGetApplicationResponse";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.QueryGetApplicationResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.QueryGetApplicationResponse".into()
-    }
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct QueryAllApplicationsRequest {
     #[prost(message, optional, tag = "1")]
     pub pagination: ::core::option::Option<
@@ -452,16 +275,6 @@ pub struct QueryAllApplicationsRequest {
     #[prost(string, tag = "2")]
     pub delegatee_gateway_address: ::prost::alloc::string::String,
 }
-impl ::prost::Name for QueryAllApplicationsRequest {
-    const NAME: &'static str = "QueryAllApplicationsRequest";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.QueryAllApplicationsRequest".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.QueryAllApplicationsRequest".into()
-    }
-}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryAllApplicationsResponse {
     #[prost(message, repeated, tag = "1")]
@@ -470,16 +283,6 @@ pub struct QueryAllApplicationsResponse {
     pub pagination: ::core::option::Option<
         super::super::cosmos::base::query::v1beta1::PageResponse,
     >,
-}
-impl ::prost::Name for QueryAllApplicationsResponse {
-    const NAME: &'static str = "QueryAllApplicationsResponse";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.QueryAllApplicationsResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.QueryAllApplicationsResponse".into()
-    }
 }
 /// Generated client implementations.
 pub mod query_client {
@@ -510,7 +313,7 @@ pub mod query_client {
     }
     impl<T> QueryClient<T>
     where
-        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T: tonic::client::GrpcService<tonic::body::Body>,
         T::Error: Into<StdError>,
         T::ResponseBody: Body<Data = Bytes> + std::marker::Send + 'static,
         <T::ResponseBody as Body>::Error: Into<StdError> + std::marker::Send,
@@ -531,13 +334,13 @@ pub mod query_client {
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
             T: tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
                 Response = http::Response<
-                    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
+                    <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
             <T as tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
             >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
         {
             QueryClient::new(InterceptedService::new(inner, interceptor))
@@ -589,7 +392,7 @@ pub mod query_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.application.Query/Params",
             );
@@ -614,7 +417,7 @@ pub mod query_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.application.Query/Application",
             );
@@ -638,7 +441,7 @@ pub mod query_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.application.Query/AllApplications",
             );
@@ -650,7 +453,7 @@ pub mod query_client {
     }
 }
 /// MsgUpdateParams is the Msg/UpdateParams request type.
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParams {
     /// authority is the address that controls the module (defaults to x/gov unless overwritten).
     #[prost(string, tag = "1")]
@@ -660,30 +463,10 @@ pub struct MsgUpdateParams {
     #[prost(message, optional, tag = "2")]
     pub params: ::core::option::Option<Params>,
 }
-impl ::prost::Name for MsgUpdateParams {
-    const NAME: &'static str = "MsgUpdateParams";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgUpdateParams".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgUpdateParams".into()
-    }
-}
 /// MsgUpdateParamsResponse defines the response structure for executing a
 /// MsgUpdateParams message.
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParamsResponse {}
-impl ::prost::Name for MsgUpdateParamsResponse {
-    const NAME: &'static str = "MsgUpdateParamsResponse";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgUpdateParamsResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgUpdateParamsResponse".into()
-    }
-}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgStakeApplication {
     /// The Bech32 address of the application.
@@ -696,56 +479,16 @@ pub struct MsgStakeApplication {
     #[prost(message, repeated, tag = "3")]
     pub services: ::prost::alloc::vec::Vec<super::shared::ApplicationServiceConfig>,
 }
-impl ::prost::Name for MsgStakeApplication {
-    const NAME: &'static str = "MsgStakeApplication";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgStakeApplication".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgStakeApplication".into()
-    }
-}
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgStakeApplicationResponse {}
-impl ::prost::Name for MsgStakeApplicationResponse {
-    const NAME: &'static str = "MsgStakeApplicationResponse";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgStakeApplicationResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgStakeApplicationResponse".into()
-    }
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUnstakeApplication {
     #[prost(string, tag = "1")]
     pub address: ::prost::alloc::string::String,
 }
-impl ::prost::Name for MsgUnstakeApplication {
-    const NAME: &'static str = "MsgUnstakeApplication";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgUnstakeApplication".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgUnstakeApplication".into()
-    }
-}
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUnstakeApplicationResponse {}
-impl ::prost::Name for MsgUnstakeApplicationResponse {
-    const NAME: &'static str = "MsgUnstakeApplicationResponse";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgUnstakeApplicationResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgUnstakeApplicationResponse".into()
-    }
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgDelegateToGateway {
     /// The Bech32 address of the application.
     #[prost(string, tag = "1")]
@@ -754,29 +497,9 @@ pub struct MsgDelegateToGateway {
     #[prost(string, tag = "2")]
     pub gateway_address: ::prost::alloc::string::String,
 }
-impl ::prost::Name for MsgDelegateToGateway {
-    const NAME: &'static str = "MsgDelegateToGateway";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgDelegateToGateway".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgDelegateToGateway".into()
-    }
-}
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgDelegateToGatewayResponse {}
-impl ::prost::Name for MsgDelegateToGatewayResponse {
-    const NAME: &'static str = "MsgDelegateToGatewayResponse";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgDelegateToGatewayResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgDelegateToGatewayResponse".into()
-    }
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUndelegateFromGateway {
     /// The Bech32 address of the application.
     #[prost(string, tag = "1")]
@@ -785,58 +508,18 @@ pub struct MsgUndelegateFromGateway {
     #[prost(string, tag = "2")]
     pub gateway_address: ::prost::alloc::string::String,
 }
-impl ::prost::Name for MsgUndelegateFromGateway {
-    const NAME: &'static str = "MsgUndelegateFromGateway";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgUndelegateFromGateway".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgUndelegateFromGateway".into()
-    }
-}
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUndelegateFromGatewayResponse {}
-impl ::prost::Name for MsgUndelegateFromGatewayResponse {
-    const NAME: &'static str = "MsgUndelegateFromGatewayResponse";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgUndelegateFromGatewayResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgUndelegateFromGatewayResponse".into()
-    }
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgTransferApplication {
     #[prost(string, tag = "1")]
     pub source_address: ::prost::alloc::string::String,
     #[prost(string, tag = "2")]
     pub destination_address: ::prost::alloc::string::String,
 }
-impl ::prost::Name for MsgTransferApplication {
-    const NAME: &'static str = "MsgTransferApplication";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgTransferApplication".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgTransferApplication".into()
-    }
-}
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgTransferApplicationResponse {}
-impl ::prost::Name for MsgTransferApplicationResponse {
-    const NAME: &'static str = "MsgTransferApplicationResponse";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgTransferApplicationResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgTransferApplicationResponse".into()
-    }
-}
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParam {
     /// authority is the address that controls the module (defaults to x/gov unless overwritten).
     #[prost(string, tag = "1")]
@@ -848,7 +531,7 @@ pub struct MsgUpdateParam {
 }
 /// Nested message and enum types in `MsgUpdateParam`.
 pub mod msg_update_param {
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    #[derive(Clone, PartialEq, Eq, Hash, ::prost::Oneof)]
     pub enum AsType {
         #[prost(uint64, tag = "3")]
         AsUint64(u64),
@@ -856,28 +539,8 @@ pub mod msg_update_param {
         AsCoin(super::super::super::cosmos::base::v1beta1::Coin),
     }
 }
-impl ::prost::Name for MsgUpdateParam {
-    const NAME: &'static str = "MsgUpdateParam";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgUpdateParam".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgUpdateParam".into()
-    }
-}
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgUpdateParamResponse {}
-impl ::prost::Name for MsgUpdateParamResponse {
-    const NAME: &'static str = "MsgUpdateParamResponse";
-    const PACKAGE: &'static str = "pocket.application";
-    fn full_name() -> ::prost::alloc::string::String {
-        "pocket.application.MsgUpdateParamResponse".into()
-    }
-    fn type_url() -> ::prost::alloc::string::String {
-        "/pocket.application.MsgUpdateParamResponse".into()
-    }
-}
 /// Generated client implementations.
 pub mod msg_client {
     #![allow(
@@ -907,7 +570,7 @@ pub mod msg_client {
     }
     impl<T> MsgClient<T>
     where
-        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T: tonic::client::GrpcService<tonic::body::Body>,
         T::Error: Into<StdError>,
         T::ResponseBody: Body<Data = Bytes> + std::marker::Send + 'static,
         <T::ResponseBody as Body>::Error: Into<StdError> + std::marker::Send,
@@ -928,13 +591,13 @@ pub mod msg_client {
             F: tonic::service::Interceptor,
             T::ResponseBody: Default,
             T: tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
                 Response = http::Response<
-                    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
+                    <T as tonic::client::GrpcService<tonic::body::Body>>::ResponseBody,
                 >,
             >,
             <T as tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
+                http::Request<tonic::body::Body>,
             >>::Error: Into<StdError> + std::marker::Send + std::marker::Sync,
         {
             MsgClient::new(InterceptedService::new(inner, interceptor))
@@ -987,7 +650,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.application.Msg/UpdateParams",
             );
@@ -1011,7 +674,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.application.Msg/StakeApplication",
             );
@@ -1035,7 +698,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.application.Msg/UnstakeApplication",
             );
@@ -1059,7 +722,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.application.Msg/DelegateToGateway",
             );
@@ -1083,7 +746,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.application.Msg/UndelegateFromGateway",
             );
@@ -1109,7 +772,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.application.Msg/TransferApplication",
             );
@@ -1135,7 +798,7 @@ pub mod msg_client {
                         format!("Service was not ready: {}", e.into()),
                     )
                 })?;
-            let codec = tonic::codec::ProstCodec::default();
+            let codec = tonic_prost::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static(
                 "/pocket.application.Msg/UpdateParam",
             );

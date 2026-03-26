@@ -8,13 +8,11 @@ default = ["grpc-transport"]
 grpc-transport = ["tonic/transport"]
 
 [dependencies]
-cosmos-sdk-proto = { version = "0.27", default-features = false, features = ["grpc"] }
-tonic = {version = "0.12", features = ["transport","tls-native-roots"]}
-prost = "0.13.5"
-prost-types = "0.13.5"
+cosmos-sdk-proto = { workspace = true, default-features = false, features = ["grpc"] }
+prost = { workspace = true, default-features = false }
+prost-types = { workspace = true }
+tonic = { workspace = true, default-features = false, features = ["codegen"] }
+tonic-prost = { workspace = true }
 
 [build-dependencies]
-regex = "1.11.1"
-tonic-buf-build = "0.3.0"
-prost-build = "0.13" 
-tonic-build = "0.12" 
+tonic-prost-build = { workspace = true }
