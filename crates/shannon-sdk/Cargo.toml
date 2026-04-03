@@ -1,0 +1,11 @@
+[package]
+name = "shannon-sdk"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# prost-types = { workspace = true }
+# prost = { workspace = true }
+shannon-protos = { path = "../shannon-protos" }
+sstr = { workspace = true }
+k256 = { workspace = true }

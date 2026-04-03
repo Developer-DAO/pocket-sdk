@@ -13,6 +13,7 @@ prost = { workspace = true, default-features = false }
 prost-types = { workspace = true }
 tonic = { workspace = true, default-features = false, features = ["codegen"] }
 tonic-prost = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
 
 [build-dependencies]
 tonic-prost-build = { workspace = true }
