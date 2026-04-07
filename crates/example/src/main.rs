@@ -1,26 +1,26 @@
-use std::collections::HashMap;
-
-use shannon_protos::{
-    cosmos::base::v1beta1::Coin,
-    pocket::{
-        application::{
-            QueryGetApplicationRequest,
-            query_client::QueryClient as ApplicationClient,
-        },
-        supplier::{QueryAllSuppliersRequest, query_client::QueryClient as SupplierClient},
-    },
+use rustls::crypto::{CryptoProvider, aws_lc_rs::default_provider};
+use shannon_protos::pocket::supplier::{
+    QueryAllSuppliersRequest, query_client::QueryClient as SupplierClient,
 };
+use std::collections::HashMap;
+use tonic::transport::{Channel, ClientTlsConfig};
 
 const URL: &'static str = "https://sauron-rpc.infra.pocket.network";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // // Get all suppliers on shannon and count how many there is of each type
-    let mut client = SupplierClient::connect(URL).await?;
+    // Get all suppliers on shannon and count how many there is of each type
+    let provider: CryptoProvider = default_provider();
+    CryptoProvider::install_default(provider).expect("Failed to install aws_lc_rs tls provider");
+    let tls_config = ClientTlsConfig::new().with_native_roots();
+    let endpoint = Channel::from_shared(URL.to_string())?;
+    let ch = endpoint.tls_config(tls_config)?.connect().await?;
+    let mut client = SupplierClient::new(ch);
+
     let req = QueryAllSuppliersRequest {
         pagination: None,
         dehydrated: false,
-        service_id: String::from(""),
+        service_id: String::from("sui"),
         operator_address: String::from(""),
         owner_address: String::from(""),
     };
@@ -44,25 +44,5 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         });
 
     println!("{res:#?}");
-
-    let mut client = ApplicationClient::connect(URL).await?;
-
-    let req = QueryGetApplicationRequest {
-        address: String::new(),
-    };
-    let res = client.application(req).await.expect("");
-    let qga = res.into_inner();
-    if let Some(app) = qga.application {
-        println!(
-            "App Stake Amount: {}upokt",
-            app.stake
-                .unwrap_or(Coin {
-                    denom: String::from("upokt"),
-                    amount: String::from("0")
-                })
-                .amount
-        );
-    }
-
     Ok(())
 }

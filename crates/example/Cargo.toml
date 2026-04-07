@@ -7,3 +7,4 @@ edition = "2024"
 shannon-protos = { path = "../shannon-protos" }
 tonic = { workspace = true, features = ["transport","tls-native-roots"]}
 tokio = { workspace = true, features = ["macros", "rt-multi-thread"]}
+rustls = { workspace = true, features = ["aws-lc-rs"] }

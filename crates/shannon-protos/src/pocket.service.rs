@@ -634,6 +634,23 @@ pub struct MsgAddService {
 }
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgAddServiceResponse {}
+/// MsgTransferService transfers ownership of a service to a new address.
+/// Only the current owner can initiate the transfer.
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct MsgTransferService {
+    /// The Bech32 address of the current service owner (signer).
+    #[prost(string, tag = "1")]
+    pub owner_address: ::prost::alloc::string::String,
+    /// The unique identifier of the service to transfer.
+    #[prost(string, tag = "2")]
+    pub service_id: ::prost::alloc::string::String,
+    /// The Bech32 address of the new service owner.
+    #[prost(string, tag = "3")]
+    pub new_owner_address: ::prost::alloc::string::String,
+}
+/// MsgTransferServiceResponse is the response to a MsgTransferService message.
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct MsgTransferServiceResponse {}
 /// Generated client implementations.
 pub mod msg_client {
     #![allow(
@@ -798,6 +815,30 @@ pub mod msg_client {
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(GrpcMethod::new("pocket.service.Msg", "AddService"));
+            self.inner.unary(req, path, codec).await
+        }
+        pub async fn transfer_service(
+            &mut self,
+            request: impl tonic::IntoRequest<super::MsgTransferService>,
+        ) -> std::result::Result<
+            tonic::Response<super::MsgTransferServiceResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/pocket.service.Msg/TransferService",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("pocket.service.Msg", "TransferService"));
             self.inner.unary(req, path, codec).await
         }
     }

@@ -279,7 +279,7 @@ pub struct EventClaimExpired {
 /// EventClaimSettled is emitted during settlement whenever a claim is successfully settled.
 /// It may or may not require a proof depending on various on-chain parameters and other factors.
 ///
-/// Next index: 15
+/// Next index: 24
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct EventClaimSettled {
     /// Whether a proof was required for the claim to be settled.
@@ -332,18 +332,61 @@ pub struct EventClaimSettled {
     #[prost(string, tag = "13")]
     pub supplier_operator_address: ::prost::alloc::string::String,
     /// A map of addresses to token amounts corresponding to the distribution of the reward tokens.
+    /// Deprecated: Use reward_distribution_detailed which preserves OpReason per entry.
     #[prost(map = "string, string", tag = "14")]
     pub reward_distribution: ::std::collections::HashMap<
         ::prost::alloc::string::String,
         ::prost::alloc::string::String,
     >,
+    /// Detailed per-reason reward breakdown. Unlike reward_distribution (field 14)
+    /// which merges all reasons per address, this preserves the OpReason for each entry.
+    #[prost(message, repeated, tag = "15")]
+    pub reward_distribution_detailed: ::prost::alloc::vec::Vec<RewardDistributionDetail>,
+    /// The actual settlement amount after overservicing cap, before mint_ratio.
+    /// Indexers can compute: overservicing_loss = claimed_upokt - settled_upokt
+    #[prost(string, tag = "16")]
+    pub settled_upokt: ::prost::alloc::string::String,
+    /// The mint_ratio applied during settlement (from tokenomics params).
+    /// Indexers can compute: deflation_loss = settled_upokt * (1 - mint_ratio)
+    #[prost(string, tag = "17")]
+    pub mint_ratio: ::prost::alloc::string::String,
+    /// The unique session ID hash for this claim's session.
+    /// Enables direct joins without needing composite keys (app + service + session_end).
+    #[prost(string, tag = "18")]
+    pub session_id: ::prost::alloc::string::String,
+    /// The owner address of the supplier who submitted the claim.
+    /// Useful when owner != operator (delegated staking) for attributing rewards.
+    #[prost(string, tag = "19")]
+    pub supplier_owner_address: ::prost::alloc::string::String,
+    /// The probabilistic estimation of the total number of relays served in this session.
+    /// Derived from the relay mining difficulty: num_estimated_relays = num_relays * difficulty_multiplier.
+    /// Unlike num_relays (which is only the count of leaves in the session tree that matched
+    /// the relay mining difficulty), this reflects the actual estimated workload.
+    #[prost(uint64, tag = "20")]
+    pub num_estimated_relays: u64,
+    /// The actual amount of uPOKT minted for this claim via the Relay Burn Equals Mint TLM.
+    /// minted_upokt = settled_upokt * mint_ratio (truncated to integer).
+    /// This is the real economic value created by this claim after both overservicing and deflation.
+    /// Relationship: claimed_upokt >= settled_upokt >= minted_upokt
+    #[prost(string, tag = "21")]
+    pub minted_upokt: ::prost::alloc::string::String,
+    /// The amount of uPOKT lost to overservicing for this claim.
+    /// overservicing_loss_upokt = claimed_upokt - settled_upokt.
+    /// Zero when the supplier's claim fits within the application's per-supplier budget.
+    #[prost(string, tag = "22")]
+    pub overservicing_loss_upokt: ::prost::alloc::string::String,
+    /// The amount of uPOKT permanently removed from circulation (deflation) for this claim.
+    /// deflation_loss_upokt = settled_upokt - minted_upokt = settled_upokt * (1 - mint_ratio).
+    /// Zero when mint_ratio = 1 (no deflation).
+    #[prost(string, tag = "23")]
+    pub deflation_loss_upokt: ::prost::alloc::string::String,
 }
 /// EventApplicationOverserviced is emitted when an Application's stake cannot cover the Supplier's claim.
 /// This means the following will ALWAYS be strictly true:  effective_burn \< expected_burn
 ///
 /// * Number of tokens burnt from app stake \< Number of tokens burnt from supplier stake
 ///
-/// Next index: 7
+/// Next index: 10
 #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventApplicationOverserviced {
     /// The application address consuming onchain services
@@ -360,6 +403,19 @@ pub struct EventApplicationOverserviced {
     /// A function of the amount that could be covered (less than) relative to the amount of work claimed to be done.
     #[prost(string, tag = "6")]
     pub effective_burn: ::prost::alloc::string::String,
+    /// The Service ID for the session where overservicing occurred.
+    /// Enables unambiguous joins with EventClaimSettled.
+    #[prost(string, tag = "7")]
+    pub service_id: ::prost::alloc::string::String,
+    /// The session end block height where overservicing occurred.
+    /// Together with service_id, application_addr, and supplier_operator_addr,
+    /// this uniquely identifies the corresponding EventClaimSettled.
+    #[prost(int64, tag = "8")]
+    pub session_end_block_height: i64,
+    /// Whether overservicing was triggered by per_session_spend_limit (true)
+    /// vs the standard stake-based cap (false, default).
+    #[prost(bool, tag = "9")]
+    pub spend_limit_exceeded: bool,
 }
 /// EventSupplierSlashed is emitted when a supplier is slashed.
 /// This can happen for in cases such as missing or invalid proofs for submitted claims.
@@ -427,6 +483,47 @@ pub struct EventClaimDiscarded {
     /// The operator address of the supplier whose claim was discarded.
     #[prost(string, tag = "7")]
     pub supplier_operator_address: ::prost::alloc::string::String,
+}
+/// RewardDistributionDetail is a per-recipient, per-reason reward breakdown for a single claim.
+/// Unlike the reward_distribution map (which merges all OpReasons per address),
+/// this preserves the OpReason for each entry.
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct RewardDistributionDetail {
+    /// The recipient address (bech32).
+    #[prost(string, tag = "1")]
+    pub recipient_address: ::prost::alloc::string::String,
+    /// The settlement operation reason from the TLM.
+    #[prost(enumeration = "SettlementOpReason", tag = "2")]
+    pub op_reason: i32,
+    /// The reward amount as a coin string (e.g. "1000upokt").
+    #[prost(string, tag = "3")]
+    pub amount: ::prost::alloc::string::String,
+}
+/// EventSettlementBatch is emitted once per unique aggregated bank operation during settlement.
+/// It provides the link between batched bank transfers and the settlement context.
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct EventSettlementBatch {
+    /// The session end block height for the batch of settlements.
+    #[prost(int64, tag = "1")]
+    pub session_end_block_height: i64,
+    /// The sender module account (or destination module for mints/burns).
+    #[prost(string, tag = "2")]
+    pub sender_module: ::prost::alloc::string::String,
+    /// The recipient (bech32 address for mod-to-acct, module name for mod-to-mod, empty for mints/burns).
+    #[prost(string, tag = "3")]
+    pub recipient: ::prost::alloc::string::String,
+    /// The settlement operation reason from the TLM.
+    #[prost(enumeration = "SettlementOpReason", tag = "4")]
+    pub op_reason: i32,
+    /// The total aggregated amount as a coin string.
+    #[prost(string, tag = "5")]
+    pub total_amount: ::prost::alloc::string::String,
+    /// Number of individual claims that contributed to this batch.
+    #[prost(uint32, tag = "6")]
+    pub num_claims: u32,
+    /// The type of bank operation: "mint", "burn", "mod_to_mod", "mod_to_acct".
+    #[prost(string, tag = "7")]
+    pub op_type: ::prost::alloc::string::String,
 }
 /// EventApplicationReimbursementRequest is emitted when an application requests a reimbursement from the DAO.
 /// It is intended to prevent self dealing attacks when global inflation is enabled.

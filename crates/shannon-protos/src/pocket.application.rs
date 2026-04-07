@@ -42,6 +42,12 @@ pub struct Application {
     /// Information about pending application transfers
     #[prost(message, optional, tag = "7")]
     pub pending_transfer: ::core::option::Option<PendingApplicationTransfer>,
+    /// Optional per-session spend limit in uPOKT. When set, caps the maximum
+    /// amount of stake consumed per session. Nil = no limit (default).
+    #[prost(message, optional, tag = "8")]
+    pub per_session_spend_limit: ::core::option::Option<
+        super::super::cosmos::base::v1beta1::Coin,
+    >,
 }
 /// UndelegatingGatewayList is used as the Value of `pending_undelegations`.
 /// It is required to store a repeated list of strings as a map value.
@@ -478,6 +484,12 @@ pub struct MsgStakeApplication {
     /// The list of services this application is staked to request service for
     #[prost(message, repeated, tag = "3")]
     pub services: ::prost::alloc::vec::Vec<super::shared::ApplicationServiceConfig>,
+    /// Optional per-session spend limit in uPOKT.
+    /// Three-way semantics: nil/omitted = preserve existing limit, zero = clear limit, positive = set new limit.
+    #[prost(message, optional, tag = "4")]
+    pub per_session_spend_limit: ::core::option::Option<
+        super::super::cosmos::base::v1beta1::Coin,
+    >,
 }
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct MsgStakeApplicationResponse {}

@@ -71,11 +71,14 @@ pub struct ParamsUpdate {
     pub params: ::core::option::Option<Params>,
 }
 /// GenesisState defines the session module's genesis state.
-#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GenesisState {
     /// params defines all the parameters of the module.
     #[prost(message, optional, tag = "1")]
     pub params: ::core::option::Option<Params>,
+    /// params_history contains historical params snapshots for height-based lookups.
+    #[prost(message, repeated, tag = "2")]
+    pub params_history: ::prost::alloc::vec::Vec<ParamsUpdate>,
 }
 /// QueryParamsRequest is request type for the Query/Params RPC method.
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
