@@ -134,7 +134,7 @@ impl ClaimProofStatus {
         }
     }
 }
-/// Next index: 13
+/// Next index: 14
 #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventClaimCreated {
     #[prost(uint64, tag = "2")]
@@ -168,10 +168,17 @@ pub struct EventClaimCreated {
     /// The operator address of the supplier which submitted the claim.
     #[prost(string, tag = "12")]
     pub supplier_operator_address: ::prost::alloc::string::String,
+    /// The probabilistic estimate of the total number of relays served this session.
+    /// num_estimated_relays = num_estimated_compute_units / compute_units_per_relay.
+    /// Mirrors EventClaimSettled.num_estimated_relays so indexers do not have to
+    /// re-derive it; the off-chain derivation divides by num_relays and breaks when
+    /// num_relays == 0 (e.g. empty claims), which this field avoids.
+    #[prost(uint64, tag = "13")]
+    pub num_estimated_relays: u64,
 }
 /// TODO_TEST: Add coverage for claim updates.
 ///
-/// Next index: 13
+/// Next index: 14
 #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventClaimUpdated {
     #[prost(uint64, tag = "2")]
@@ -205,8 +212,15 @@ pub struct EventClaimUpdated {
     /// The operator address of the supplier which updated the claim.
     #[prost(string, tag = "12")]
     pub supplier_operator_address: ::prost::alloc::string::String,
+    /// The probabilistic estimate of the total number of relays served this session.
+    /// num_estimated_relays = num_estimated_compute_units / compute_units_per_relay.
+    /// Mirrors EventClaimSettled.num_estimated_relays so indexers do not have to
+    /// re-derive it; the off-chain derivation divides by num_relays and breaks when
+    /// num_relays == 0 (e.g. empty claims), which this field avoids.
+    #[prost(uint64, tag = "13")]
+    pub num_estimated_relays: u64,
 }
-/// Next index: 13
+/// Next index: 14
 #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventProofSubmitted {
     #[prost(uint64, tag = "3")]
@@ -240,10 +254,17 @@ pub struct EventProofSubmitted {
     /// The operator address of the supplier which submitted the proof.
     #[prost(string, tag = "12")]
     pub supplier_operator_address: ::prost::alloc::string::String,
+    /// The probabilistic estimate of the total number of relays served this session.
+    /// num_estimated_relays = num_estimated_compute_units / compute_units_per_relay.
+    /// Mirrors EventClaimSettled.num_estimated_relays so indexers do not have to
+    /// re-derive it; the off-chain derivation divides by num_relays and breaks when
+    /// num_relays == 0 (e.g. empty claims), which this field avoids.
+    #[prost(uint64, tag = "13")]
+    pub num_estimated_relays: u64,
 }
 /// TODO_TEST: Add coverage for proof updates.
 ///
-/// Next index: 13
+/// Next index: 14
 #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventProofUpdated {
     #[prost(uint64, tag = "3")]
@@ -277,6 +298,13 @@ pub struct EventProofUpdated {
     /// The operator address of the supplier which updated the proof.
     #[prost(string, tag = "12")]
     pub supplier_operator_address: ::prost::alloc::string::String,
+    /// The probabilistic estimate of the total number of relays served this session.
+    /// num_estimated_relays = num_estimated_compute_units / compute_units_per_relay.
+    /// Mirrors EventClaimSettled.num_estimated_relays so indexers do not have to
+    /// re-derive it; the off-chain derivation divides by num_relays and breaks when
+    /// num_relays == 0 (e.g. empty claims), which this field avoids.
+    #[prost(uint64, tag = "13")]
+    pub num_estimated_relays: u64,
 }
 /// Event emitted after a proof has been checked for validity in the proof module's
 /// EndBlocker.

@@ -298,6 +298,20 @@ pub struct Params {
     /// were not in effect during their creation.
     #[prost(uint64, tag = "11")]
     pub compute_unit_cost_granularity: u64,
+    /// session_grid_anchor_height is the block height at which this params epoch's session
+    /// grid begins. Boundary math is computed relative to this anchor instead of block 1, so
+    /// that changing num_blocks_per_session does not misalign in-flight sessions (#543).
+    /// DERIVED metadata, NOT governable: set by the param-update handler to the next session
+    /// boundary; any value supplied via governance is ignored/overwritten. A zero value falls
+    /// back to the genesis block-1 grid (legacy behavior).
+    #[prost(uint64, tag = "12")]
+    pub session_grid_anchor_height: u64,
+    /// session_number_at_anchor is the session number of the session starting at
+    /// session_grid_anchor_height. Used to keep GetSessionNumber monotonic across epochs
+    /// (epoch-relative numbering would otherwise reset at each change).
+    /// DERIVED metadata, NOT governable.
+    #[prost(uint64, tag = "13")]
+    pub session_number_at_anchor: u64,
 }
 /// ParamsUpdate stores a snapshot of shared parameters
 /// along with the height at which they became effective.
@@ -329,6 +343,20 @@ pub struct QueryParamsRequest {}
 #[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct QueryParamsResponse {
     /// params holds all the parameters of this module.
+    #[prost(message, optional, tag = "1")]
+    pub params: ::core::option::Option<Params>,
+}
+/// QueryParamsAtHeightRequest is request type for the Query/ParamsAtHeight RPC method.
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct QueryParamsAtHeightRequest {
+    /// height is the block height at which to look up the effective shared params.
+    #[prost(int64, tag = "1")]
+    pub height: i64,
+}
+/// QueryParamsAtHeightResponse is response type for the Query/ParamsAtHeight RPC method.
+#[derive(Clone, Copy, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct QueryParamsAtHeightResponse {
+    /// params holds the shared parameters that were effective at the requested height.
     #[prost(message, optional, tag = "1")]
     pub params: ::core::option::Option<Params>,
 }
@@ -447,6 +475,34 @@ pub mod query_client {
             let mut req = request.into_request();
             req.extensions_mut()
                 .insert(GrpcMethod::new("pocket.shared.Query", "Params"));
+            self.inner.unary(req, path, codec).await
+        }
+        /// ParamsAtHeight queries the shared parameters that were effective at a given block
+        /// height. Used by off-chain clients (e.g. the RelayMiner) to compute a session's
+        /// claim/proof windows using the num_blocks_per_session that was in effect when that
+        /// session started, rather than the live value — see the anchored session grid (#543).
+        pub async fn params_at_height(
+            &mut self,
+            request: impl tonic::IntoRequest<super::QueryParamsAtHeightRequest>,
+        ) -> std::result::Result<
+            tonic::Response<super::QueryParamsAtHeightResponse>,
+            tonic::Status,
+        > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::unknown(
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic_prost::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/pocket.shared.Query/ParamsAtHeight",
+            );
+            let mut req = request.into_request();
+            req.extensions_mut()
+                .insert(GrpcMethod::new("pocket.shared.Query", "ParamsAtHeight"));
             self.inner.unary(req, path, codec).await
         }
     }

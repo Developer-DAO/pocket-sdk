@@ -275,6 +275,13 @@ pub struct EventClaimExpired {
     /// The operator address of the supplier whose claim expired.
     #[prost(string, tag = "12")]
     pub supplier_operator_address: ::prost::alloc::string::String,
+    /// The probabilistic estimate of the total number of relays served this session.
+    /// num_estimated_relays = num_estimated_compute_units / compute_units_per_relay.
+    /// Mirrors EventClaimSettled.num_estimated_relays so indexers do not have to
+    /// re-derive it; the off-chain derivation divides by num_relays and breaks when
+    /// num_relays == 0 (e.g. empty claims), which this field avoids.
+    #[prost(uint64, tag = "13")]
+    pub num_estimated_relays: u64,
 }
 /// EventClaimSettled is emitted during settlement whenever a claim is successfully settled.
 /// It may or may not require a proof depending on various on-chain parameters and other factors.
@@ -420,7 +427,7 @@ pub struct EventApplicationOverserviced {
 /// EventSupplierSlashed is emitted when a supplier is slashed.
 /// This can happen for in cases such as missing or invalid proofs for submitted claims.
 ///
-/// Next index: 9
+/// Next index: 10
 #[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
 pub struct EventSupplierSlashed {
     /// Amount slashed from the supplier's stake.
@@ -450,6 +457,12 @@ pub struct EventSupplierSlashed {
     /// The operator address of the supplier that was slashed.
     #[prost(string, tag = "8")]
     pub supplier_operator_address: ::prost::alloc::string::String,
+    /// The supplier's remaining stake AFTER the slash was applied, in uPOKT
+    /// (capped at 0 when the penalty exceeds the prior stake). Lets indexers read
+    /// the post-slash stake directly instead of subtracting proof_missing_penalty
+    /// from a cached prior stake, removing dependence on indexer cache accuracy.
+    #[prost(string, tag = "9")]
+    pub supplier_stake_after_slash: ::prost::alloc::string::String,
 }
 /// EventClaimDiscarded is emitted when a claim is discarded due to unexpected situations.
 /// It is used to prevent chain halts in favor of some missing claims.
@@ -524,6 +537,150 @@ pub struct EventSettlementBatch {
     /// The type of bank operation: "mint", "burn", "mod_to_mod", "mod_to_acct".
     #[prost(string, tag = "7")]
     pub op_type: ::prost::alloc::string::String,
+}
+/// EventValidatorRewardDistribution is emitted once per bonded validator per settlement
+/// op_reason per settlement block. It summarizes how that validator's slice of the proposer
+/// reward pool was split into commission and per-delegator rewards.
+///
+/// It does NOT multiply with the number of delegators or claims (it is bounded by the
+/// validator-set size), preserving the settlement event-count reduction from #1758.
+///
+/// A delegator's reward from this validator can be reconstructed (off-chain / indexer side)
+/// without per-delegator events:
+///
+/// ```text
+/// delegatorReward = (self_delegation_reward_upokt + delegators_reward_upokt)
+///                   × (delegatorStake / total_delegated_stake_upokt)
+/// ```
+///
+/// where `(self_delegation_reward_upokt + delegators_reward_upokt)` is the post-commission
+/// remainder, distributed across all delegations (including the validator's self-delegation)
+/// proportional to stake.
+///
+/// CROSS-DELEGATION ACCOUNTING NOTE (for indexers):
+/// When the SAME pokt address is both a validator's account AND a delegator on a
+/// different validator, its income from BOTH sources is bucketed under the
+/// validator-side op_reason in EventSettlementBatch (because the bank-batch
+/// accumulator keys on (recipient, op_reason), not source). Per-validator
+/// breakdown reported BY THIS EVENT stays correct — commission_upokt is
+/// unambiguously validator income and delegators_reward_upokt /
+/// self_delegation_reward_upokt are unambiguously delegator-side. Indexers
+/// building "VALIDATOR vs DELEGATOR" totals across the bank-batch stream
+/// should sum from this event (per-validator) rather than from
+/// EventSettlementBatch alone, otherwise cross-delegation accounts will
+/// over-count under VALIDATOR and under-count under DELEGATOR.
+///
+/// Next index: 12
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct EventValidatorRewardDistribution {
+    /// The session end block height for the batch of settlements.
+    ///
+    /// Caveat (cross-session batches): when settlement processes claims that
+    /// belong to DIFFERENT session_end_block_heights in the same settlement
+    /// block (the O2 cross-session candidate-scan path, exercised after a
+    /// window-offset change), this field reports the session_end_block_height
+    /// of the FIRST claim in the batched results — it does NOT identify every
+    /// session contributing to the pool. Indexers wanting a canonical timestamp
+    /// for the validator-reward summary should use the settlement block height
+    /// from the SDK header (the height at which this event was emitted) rather
+    /// than treating session_end_block_height as definitive. On the common
+    /// path (single-session settlement, by far the typical case on mainnet),
+    /// this field and the settlement block height differ by exactly the
+    /// claim/proof-window offsets, and there is no ambiguity.
+    #[prost(int64, tag = "1")]
+    pub session_end_block_height: i64,
+    /// The settlement operation reason (distinguishes Mint=Burn from Global Mint pools).
+    #[prost(enumeration = "SettlementOpReason", tag = "2")]
+    pub op_reason: i32,
+    /// The validator operator (valoper...) address.
+    #[prost(string, tag = "3")]
+    pub validator_operator_address: ::prost::alloc::string::String,
+    /// The validator account (pokt...) address; commission and the self-delegation slice
+    /// are paid here.
+    #[prost(string, tag = "4")]
+    pub validator_account_address: ::prost::alloc::string::String,
+    /// The validator's commission rate as a decimal string (e.g. "0.100000000000000000").
+    #[prost(string, tag = "5")]
+    pub commission_rate: ::prost::alloc::string::String,
+    /// The validator's slice of the total proposer reward pool, as upokt.
+    #[prost(string, tag = "6")]
+    pub pool_share_upokt: ::prost::alloc::string::String,
+    /// The commission carved out of pool_share_upokt and paid to the validator account, as upokt.
+    #[prost(string, tag = "7")]
+    pub commission_upokt: ::prost::alloc::string::String,
+    /// The validator's own self-delegation slice of the post-commission remainder, as upokt.
+    /// For sole-stakeholder validators (no external delegations), the entire remainder is here.
+    #[prost(string, tag = "8")]
+    pub self_delegation_reward_upokt: ::prost::alloc::string::String,
+    /// The portion of the post-commission remainder paid to external (non-self) delegators, as upokt.
+    #[prost(string, tag = "9")]
+    pub delegators_reward_upokt: ::prost::alloc::string::String,
+    /// The total delegated stake backing this validator (includes the self-delegation), as upokt.
+    /// This is the denominator for per-delegator reward attribution.
+    #[prost(string, tag = "10")]
+    pub total_delegated_stake_upokt: ::prost::alloc::string::String,
+    /// The number of external (non-self) delegators that received a reward from this validator.
+    #[prost(uint32, tag = "11")]
+    pub num_delegators: u32,
+}
+/// EventSupplierRevShareFallbackDistribution is emitted during settlement when a
+/// supplier's per-service RevShare list cannot be used as-is to distribute the
+/// supplier's slice of the reward. The known triggers are:
+///
+/// 1. Sum of revshare percentages != 100 (validation perimeter hole: the
+///    stake-time ValidateServiceRevShare guarantees sum == 100 for NEW stakes,
+///    but pre-v0.1.34 state migrated via the duplicate-revshare merge
+///    (`x/supplier/keeper/migrate_duplicate_revshare.go`) can produce a merged
+///    list with sum > 100 — that supplier survives in store until it restakes).
+/// 1. Duplicate recipient addresses observed AFTER migration (defensive — the
+///    migration is expected to have removed them, but settlement validates
+///    independently to avoid silent map-overwrite data loss).
+/// 1. A negative remainder computed during proportional distribution (defensive
+///    overflow check; should be unreachable when sum == 100 holds).
+///
+/// On any of the above, settlement pays the full supplier slice to the supplier's
+/// `owner_address` (a proto-level field guaranteed populated at stake time,
+/// independent of any revshare config). This rescues the chain from a `NewCoin`
+/// panic on negative amount AND keeps supplier revenue flowing to the rightful
+/// owner, while signalling clearly that the operator's revshare config is broken
+/// and needs to be re-staked.
+///
+/// Indexers should treat this event as a "supplier config is broken" beacon:
+/// payouts via this event will NOT appear in the revshare-configured recipients'
+/// balances. Operator follow-up = restake supplier with clean revshare.
+///
+/// Expected occurrences on a healthy mainnet: zero. Non-zero count post-upgrade
+/// indicates pre-existing duplicate-revshare suppliers that the migration could
+/// not normalize back to sum == 100; combine with B2 pre-upgrade enumeration to
+/// reach out to affected operators.
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct EventSupplierRevShareFallbackDistribution {
+    /// The operator address of the supplier whose revshare config was rejected.
+    #[prost(string, tag = "1")]
+    pub supplier_operator_address: ::prost::alloc::string::String,
+    /// The owner address that received the full supplier slice as fallback.
+    #[prost(string, tag = "2")]
+    pub supplier_owner_address: ::prost::alloc::string::String,
+    /// The Service ID for the claim whose distribution triggered the fallback.
+    #[prost(string, tag = "3")]
+    pub service_id: ::prost::alloc::string::String,
+    /// The session end block height of the settled claim that triggered the fallback.
+    #[prost(int64, tag = "4")]
+    pub session_end_block_height: i64,
+    /// The full amount paid to the owner as fallback, as a coin string (e.g. "1000upokt").
+    #[prost(string, tag = "5")]
+    pub amount: ::prost::alloc::string::String,
+    /// The settlement operation reason (TLM source) that produced the supplier slice.
+    #[prost(enumeration = "SettlementOpReason", tag = "6")]
+    pub op_reason: i32,
+    /// Observed sum of revshare percentages, 0-255+ in theory but practically a
+    /// small positive integer different from 100. Reported for operator triage.
+    #[prost(uint64, tag = "7")]
+    pub observed_sum_percentage: u64,
+    /// Human-readable reason describing why the fallback engaged
+    /// (e.g. "sum 110 != 100", "duplicate address ...", "negative remainder").
+    #[prost(string, tag = "8")]
+    pub reason: ::prost::alloc::string::String,
 }
 /// EventApplicationReimbursementRequest is emitted when an application requests a reimbursement from the DAO.
 /// It is intended to prevent self dealing attacks when global inflation is enabled.

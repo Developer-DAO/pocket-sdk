@@ -55,6 +55,40 @@ pub struct EventSupplierUnbondingCanceled {
     #[prost(int64, tag = "2")]
     pub session_end_height: i64,
 }
+/// EventSupplierStakeStuckInModulePool is emitted when EndBlockerUnbondSuppliers
+/// could NOT return the supplier's bonded stake to its owner account (e.g., the
+/// owner is a blocked module account, the bank module rejected the send). The
+/// supplier is removed from state anyway to keep the chain making progress, but
+/// the coins remain stranded in the supplier module pool. Indexers should track
+/// these events so governance can propose a reclaim transfer; without this event
+/// the loss would be invisible to off-chain observers.
+///
+/// Pre-v0.1.34 the same scenario only produced a Logger().Error line — easy to
+/// miss in operator workflows. The new stake-time module-account-owner check
+/// prevents NEW occurrences, so this event should fire only for legacy state.
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct EventSupplierStakeStuckInModulePool {
+    /// operator_address identifies the removed supplier.
+    #[prost(string, tag = "1")]
+    pub operator_address: ::prost::alloc::string::String,
+    /// owner_address is the address the bank module refused to send to. Either a
+    /// blocked module account or an otherwise rejected recipient.
+    #[prost(string, tag = "2")]
+    pub owner_address: ::prost::alloc::string::String,
+    /// stuck_coin is the coin that remains in the supplier module pool with no
+    /// owner to claim it.
+    #[prost(message, optional, tag = "3")]
+    pub stuck_coin: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
+    /// reason is the bank-module error string captured at the time of the failed
+    /// send. Free-form, intended for human triage.
+    #[prost(string, tag = "4")]
+    pub reason: ::prost::alloc::string::String,
+    /// session_end_height is the session-end height of the EndBlocker that
+    /// attempted (and failed) the return-of-stake. Useful for correlating with
+    /// settlement events in the same block.
+    #[prost(int64, tag = "5")]
+    pub session_end_height: i64,
+}
 /// EventSupplierServiceConfigActivated is emitted when a supplier service configuration
 /// becomes effective at a specific block height.
 ///

@@ -17,5 +17,5 @@ tokio = {version = "1.45.0", features = ["macros", "rt-multi-thread"]}
 tonic-prost-build = "0.14.5"
 tonic-prost = "0.14.5"
 serde = { version = "1.0.228", features = ["derive"] }
-sstr = "0.1.4"
+sstr = "0.3.0"
 k256 = "0.13.4"

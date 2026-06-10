@@ -1226,9 +1226,9 @@ dependencies = [
 
 [[package]]
 name = "sstr"
-version = "0.1.4"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f504e22385ac7e334576c30ebe40c783b044e8bdd56cf1efd97d0ef4d42daefe"
+checksum = "769151c8aac7e5b1c576fbb573e1bc139dc92cbd4c83e3fb8ebc2c42a131b220"
 
 [[package]]
 name = "subtle"

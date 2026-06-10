@@ -48,6 +48,38 @@ pub struct Application {
     pub per_session_spend_limit: ::core::option::Option<
         super::super::cosmos::base::v1beta1::Coin,
     >,
+    /// List of historical service configuration updates, tracking the application's
+    /// service config changes and their corresponding activation heights.
+    ///
+    /// Mirrors the supplier `service_config_history` pattern to support
+    /// deterministic historical session queries (GetSession at a past height must
+    /// return the service config that was active at that height, not the latest).
+    ///
+    /// This history is NOT pruned: applications are orders of magnitude fewer than
+    /// supplier service rows, so the storage cost is negligible, and keeping it
+    /// forever avoids the pruning-induced historical-query non-determinism observed
+    /// on the supplier side (see session_mutation_analysis).
+    #[prost(message, repeated, tag = "9")]
+    pub service_config_history: ::prost::alloc::vec::Vec<ApplicationServiceConfigUpdate>,
+}
+/// ApplicationServiceConfigUpdate tracks a change in an application's service
+/// configuration at a specific block height, enabling deterministic
+/// reconstruction of which service an application was staked for at any height.
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct ApplicationServiceConfigUpdate {
+    /// Address of the application corresponding to the service configuration change
+    #[prost(string, tag = "1")]
+    pub application_address: ::prost::alloc::string::String,
+    /// The specific service configuration that was added or scheduled for removal
+    #[prost(message, optional, tag = "2")]
+    pub service: ::core::option::Option<super::shared::ApplicationServiceConfig>,
+    /// Block height at which this service configuration became active in the network
+    #[prost(int64, tag = "3")]
+    pub activation_height: i64,
+    /// Block height at which this service configuration was deactivated (0 if still active).
+    /// For configs scheduled for deactivation, this stores the height when deactivation occurs.
+    #[prost(int64, tag = "4")]
+    pub deactivation_height: i64,
 }
 /// UndelegatingGatewayList is used as the Value of `pending_undelegations`.
 /// It is required to store a repeated list of strings as a map value.
@@ -188,6 +220,42 @@ pub struct EventApplicationUnbondingEnd {
     /// The height at which application unbonding ended.
     #[prost(int64, tag = "4")]
     pub unbonding_end_height: i64,
+}
+/// EventApplicationStakeStuckInModulePool is emitted when EndBlockerUnbondApplications
+/// (via UnbondApplication) could NOT return the application's escrowed stake to its
+/// owner account (e.g., a blocked module account, the bank module rejected the send).
+/// The application is removed from state anyway to keep the chain making progress,
+/// but the coins remain stranded in the application module pool. Indexers should
+/// track these events so governance can propose a reclaim transfer; without this
+/// event the loss would be invisible to off-chain observers.
+///
+/// Mirror of EventSupplierStakeStuckInModulePool (see pocket/supplier/event.proto).
+/// Before v0.1.34 the application path returned the bank-send error from
+/// EndBlockerUnbondApplications, which halts the chain when a legacy
+/// module-account-owned application exists. This event replaces that halt vector
+/// with an indexer-visible signal + continue, matching the supplier-side fix.
+///
+/// Expected occurrences on a healthy mainnet: zero. Non-zero count post-upgrade
+/// indicates pre-existing legacy state (module-account-owned applications); the
+/// new stake-time module-account-owner check blocks NEW occurrences.
+#[derive(Clone, PartialEq, Eq, Hash, ::prost::Message)]
+pub struct EventApplicationStakeStuckInModulePool {
+    /// application_address identifies the removed application.
+    #[prost(string, tag = "1")]
+    pub application_address: ::prost::alloc::string::String,
+    /// stuck_coin is the coin that remains in the application module pool with no
+    /// owner to claim it.
+    #[prost(message, optional, tag = "2")]
+    pub stuck_coin: ::core::option::Option<super::super::cosmos::base::v1beta1::Coin>,
+    /// reason is the bank-module error string captured at the time of the failed
+    /// send. Free-form, intended for human triage.
+    #[prost(string, tag = "3")]
+    pub reason: ::prost::alloc::string::String,
+    /// session_end_height is the session-end height of the EndBlocker that
+    /// attempted (and failed) the return-of-stake. Useful for correlating with
+    /// settlement events in the same block.
+    #[prost(int64, tag = "4")]
+    pub session_end_height: i64,
 }
 /// EventApplicationUnbondingCanceled is emitted when an application which was unbonding
 /// successfully (re-)stakes before the unbonding period has elapsed. An EventApplicationStaked
